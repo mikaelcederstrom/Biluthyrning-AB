@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.352
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Biluthyrning AB", "Biluthyrning AB\Biluthyrning AB.csproj", "{762D04A7-DFB2-42AA-8332-347DB1C4D55A}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "BiluthyrningDatabase", "BiluthyrningDatabase\BiluthyrningDatabase.sqlproj", "{C8E8D97B-33C1-4D5E-9463-DFEB383D1A30}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{762D04A7-DFB2-42AA-8332-347DB1C4D55A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{762D04A7-DFB2-42AA-8332-347DB1C4D55A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{762D04A7-DFB2-42AA-8332-347DB1C4D55A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{762D04A7-DFB2-42AA-8332-347DB1C4D55A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8E8D97B-33C1-4D5E-9463-DFEB383D1A30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8E8D97B-33C1-4D5E-9463-DFEB383D1A30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8E8D97B-33C1-4D5E-9463-DFEB383D1A30}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{C8E8D97B-33C1-4D5E-9463-DFEB383D1A30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8E8D97B-33C1-4D5E-9463-DFEB383D1A30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8E8D97B-33C1-4D5E-9463-DFEB383D1A30}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {961DE0D4-2C79-4DD0-AEA7-DB06A77D681A}
+	EndGlobalSection
+EndGlobal

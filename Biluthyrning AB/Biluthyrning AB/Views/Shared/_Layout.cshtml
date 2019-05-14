@@ -1,0 +1,25 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="~/css/skeleton.css">
+
+</head>
+<body>
+    <div class="menubarTop">
+        <ul>
+
+            <li><a asp-controller="Cars" asp-action="Home">Home</a></li>
+            <li><a asp-controller="Cars" asp-action="Rent">Hyr bil</a></li>
+            <li><a asp-controller="Cars" asp-action="Return">Lämna tillbaka bil</a></li>
+        </ul>
+    </div>
+    <div>
+        @RenderBody()
+    </div>
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
+    @RenderSection("scripts", false)
+</body>
+</html>

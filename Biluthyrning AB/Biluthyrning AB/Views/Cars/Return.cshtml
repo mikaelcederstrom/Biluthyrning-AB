@@ -1,0 +1,28 @@
+﻿@model Biluthyrning_AB.Models.ViewModels.CarsReturnVM
+@{
+    ViewData["Title"] = "Return";
+}
+
+<h1>Return</h1>
+
+<form asp-controller="Cars" asp-action="Return" method="post">
+
+
+    <label asp-for="Kilometer"></label>
+    <input asp-for="Kilometer" />
+    <span asp-validation-for="Kilometer"> </span>
+
+    <label asp-for="OrderNumber"></label>
+    <input asp-for="OrderNumber" />
+    <span asp-validation-for="OrderNumber"> </span>
+
+
+    <label asp-for="Date"></label>
+    <input asp-for="Date" />
+
+    <span asp-validation-for="Date"></span>
+
+
+    <br />
+    <input type="submit" value="Add" />
+</form>
