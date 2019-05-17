@@ -89,5 +89,34 @@ namespace Biluthyrning_AB.Controllers
             return View(x);
 
         }
+
+        [HttpGet]
+        [Route("~/service")]
+        public IActionResult Service()
+        {
+            
+            return View(service.GetServiceListFromDB());
+        }
+
+        [HttpPost]
+        [Route("~/service")]
+        public IActionResult Service(int serviceId)
+        {
+            //viewModel.KilometerBeforeRental = service.GetKmFromOrderID(viewModel.OrderNumber);
+
+
+            //if (viewModel.Kilometer < viewModel.KilometerBeforeRental)
+            //    return Content("Bilen kan inte lämnas tillbaka med en mätarställning som är lägre än vid hyrning"); // Return partialview, med texten 
+            //if (!ModelState.IsValid || viewModel.Kilometer < viewModel.KilometerBeforeRental)
+            //    return View(viewModel);
+
+            //CarsConfReturnVM cr = service.ReturnOrderInDB(viewModel);
+            //return RedirectToAction("ConfReturn", "Cars", cr);
+
+            service.UpdateServiceToDone(serviceId);
+
+            return RedirectToAction("Service", "Cars");
+        }
+        
     }
 }

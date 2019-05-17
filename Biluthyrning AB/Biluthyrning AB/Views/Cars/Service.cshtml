@@ -1,0 +1,34 @@
+﻿@model Biluthyrning_AB.Models.ViewModels.CarServiceVM[]
+@{
+    ViewData["Title"] = "Service";
+}
+
+<h1>Service</h1>
+
+@foreach (var item in Model)
+{
+
+    @if (@item.ServiceDone == true)
+    {
+        <p style="color: green">@item.CarType, @item.Registrationnumber, @item.Kilometer, @item.FlaggedForServiceDate, @item.ServiceDoneDate</p>
+    }
+
+    @if (@item.ServiceDone == false || @item.ServiceDone == null)
+    {
+        <p style="color: red">@item.CarType, @item.Registrationnumber, @item.Kilometer, @item.FlaggedForServiceDate</p>
+
+        <form asp-controller="Cars" asp-action="Service" method="post">
+            
+            
+            <button value="Gör service" id="@item.Id" />
+            @*<label asp-for=""></label>
+            <input asp-for="personNumber" />
+            <span asp-validation-for="personNumber"> </span>*@
+            
+            <br />
+            <input type="submit" value="Add" />
+        </form>
+    }
+}
+
+

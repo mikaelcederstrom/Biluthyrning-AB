@@ -103,6 +103,43 @@ namespace Biluthyrning_AB.Models
                 .ToArray();
         }
 
+        internal CarServiceVM[] GetServiceListFromDB()
+        {
+            return context.CarService
+                .Select(s => new CarServiceVM
+                {
+                    CarId = s.CarId,
+                    FlaggedForServiceDate = s.FlaggedForServiceDate,
+                    Id = s.Id,
+                    ServiceDone = s.ServiceDone,
+                    ServiceDoneDate = s.ServiceDoneDate,
+                    CarType = context.Cars
+                        .Where(c => c.Id == s.CarId)
+                        .Select(c => c.CarType).FirstOrDefault(),
+                    Kilometer = context.Cars
+                        .Where(c => c.Id == s.CarId)
+                        .Select(c => c.Kilometer).FirstOrDefault(),
+                    Registrationnumber = context.Cars
+                        .Where(c => c.Id == s.CarId)
+                        .Select(c => c.Registrationnumber).FirstOrDefault(),
+                }).ToArray();
+        }
+
+        internal void UpdateServiceToDone(int serviceId)
+        {
+            CarService cs = context.CarService
+          .Where(s => s.Id == serviceId)
+          .Select(c => new CarService
+          {
+              
+             ServiceDone = true,
+             ServiceDoneDate = DateTime.Now
+
+          }).SingleOrDefault();
+            context.Update(cs);
+            context.SaveChanges();
+        }
+
         private void UpdateAvailability(int carID)
         {
             Cars car = context.Cars
