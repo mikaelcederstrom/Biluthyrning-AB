@@ -28,9 +28,9 @@ namespace Biluthyrning_AB.Controllers
 
         [HttpGet]
         [Route("~/rent/")]
-        public IActionResult Rent(string tempData)
+        public IActionResult Rent()
         {
-            return View(service.DropDownListForCarType(tempData));
+            return View(service.DropDownListForCarType());
         }
 
         [HttpPost]
@@ -39,9 +39,9 @@ namespace Biluthyrning_AB.Controllers
         {
             if (!ModelState.IsValid)
                 return View(viewModel);
-
-            string tempData = $"Din bokning är gjord och har ordernummer {service.AddOrderToDB(viewModel)}";
-            return RedirectToAction("Rent", "Cars", tempData);
+            
+            CarsReceiptVM x = service.CreateReceipt(service.AddOrderToDB(viewModel), viewModel);
+            return RedirectToAction("Receipt", "Cars", x);
         }
 
         [HttpGet]
@@ -55,11 +55,39 @@ namespace Biluthyrning_AB.Controllers
         [Route("~/return")]
         public IActionResult Return(CarsReturnVM viewModel)
         {
-            if (!ModelState.IsValid)
+            viewModel.KilometerBeforeRental = service.GetKmFromOrderID(viewModel.OrderNumber);                        
+
+
+            if (viewModel.Kilometer < viewModel.KilometerBeforeRental)
+                return Content("Bilen kan inte lämnas tillbaka med en mätarställning som är lägre än vid hyrning"); // Return partialview, med texten 
+            if (!ModelState.IsValid || viewModel.Kilometer < viewModel.KilometerBeforeRental)
                 return View(viewModel);
 
-            service.ReturnOrderInDB(viewModel);
-            return RedirectToAction("Return", "Cars");
+            CarsConfReturnVM cr =  service.ReturnOrderInDB(viewModel);
+            return RedirectToAction("ConfReturn", "Cars", cr);
+        }
+
+        [HttpGet]
+        [Route("~/receipt")]
+        public IActionResult Receipt(CarsReceiptVM viewModel)
+        {
+            return View(viewModel);
+        }
+
+        [HttpGet]
+        [Route("~/confReturn")]
+        public IActionResult ConfReturn(CarsConfReturnVM viewModel)
+        {
+            return View(viewModel);
+        }
+
+        [HttpGet]
+        [Route("~/listOfAllCars")]
+        public IActionResult ListOfAll()
+        {
+            CarsListOfAllVM[] x = service.GetAllCarsFromDB();
+            return View(x);
+
         }
     }
 }

@@ -26,6 +26,8 @@ namespace Biluthyrning_AB
             services.AddDbContext<BiluthyrningContext>(o => o.UseSqlServer(connString));
 
             services.AddTransient<CarsService>();
+            services.AddTransient<CustomersService>();
+            
             services.AddMvc();
         }
 

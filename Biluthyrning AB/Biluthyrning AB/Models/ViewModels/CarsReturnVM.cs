@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Biluthyrning_AB.Models.Entities;
+using System;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Biluthyrning_AB.Models.ViewModels
 {
@@ -15,7 +13,11 @@ namespace Biluthyrning_AB.Models.ViewModels
 
         [Display(Name = "Mätarställning")]
         [Required(ErrorMessage = "Skriv in mätarställningen")]
+        [Range(0.0, 3000.0)]
         public int Kilometer { get; set; }
+
+        
+        public int KilometerBeforeRental { get; set; }
 
         [Display(Name = "Tid för återlämning")]
         [Range(typeof(DateTime), "1/1/2019", "1/1/2021", ErrorMessage = "Date is out of Range")]

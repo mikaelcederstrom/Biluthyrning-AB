@@ -1,0 +1,17 @@
+﻿@model Biluthyrning_AB.Models.ViewModels.CarsConfReturnVM
+@{
+    ViewData["Title"] = "Bekräftad återlämning av bil";
+}
+
+<h1>Bekräftad återlämning av bil</h1>
+<p>Bokningsnummer: @Model.Id</p>
+<p>Mätarställning vid återlämning: @Model.KilometerAfterRental</p>
+<p>Mätarställning innan uthyrning: @Model.KilometerBeforeRental</p>
+@*<p>Bokning gjord under personnummer: @Model.Personnumber</p>*@
+<p>Datum för uthyrning: @Model.RentalDate</p>
+@if(@Model.CarReturned){
+    <p>Datum för återlämning: @Model.ReturnDate</p>}
+<p>Total kostnad för hyrning: @Model.rentalPrice kr</p>
+
+
+

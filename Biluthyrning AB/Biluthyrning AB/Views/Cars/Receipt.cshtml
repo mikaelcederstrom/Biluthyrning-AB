@@ -1,0 +1,12 @@
+﻿@model Biluthyrning_AB.Models.ViewModels.CarsReceiptVM
+
+@{
+    ViewData["Title"] = "Bokningsbekräftelse";
+}
+
+    <h1>Bokningsbekräftelse</h1>
+<p>Bokning gjord under personnummer: @Model.Personnumber</p>
+<p>Bokningsnummer: @Model.Id</p>
+<p>Mätarställning på bil @Model.KilometerBeforeRental</p>
+<p>Bil hämtas: @Model.RentalDate</p>
+

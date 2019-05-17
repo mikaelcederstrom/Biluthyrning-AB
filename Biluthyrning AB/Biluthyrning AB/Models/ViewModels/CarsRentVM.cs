@@ -13,7 +13,7 @@ namespace Biluthyrning_AB.Models.ViewModels
 
         [Display(Name = "Personnummer")]
         [Required(ErrorMessage = "Skriv ditt personnummer")]
-        [StringLength(10, ErrorMessage = "Personnumret ska vara 10 tecken", MinimumLength = 10)]
+        [StringLength(11, ErrorMessage = "Personnumret ska vara 11 tecken", MinimumLength = 11)]
         public string personNumber { get; set; }
         public string Registrationnumber { get; set; }
         public int Kilometer { get; set; }
@@ -24,7 +24,8 @@ namespace Biluthyrning_AB.Models.ViewModels
 
         public int SelectedCarTypeValue { get; set; }
 
-        [Range(typeof(DateTime), "1/1/2019", "1/1/2021", ErrorMessage = "Date is out of Range")]
+        [Display(Name = "Datum för hyrning")]
+        [Range(typeof(DateTime), "1/1/2019", "1/1/2021", ErrorMessage = "Måste välja datum mellan 2019-01-01 & 2021-01-01")]
         public DateTime Date { get; set; }
 
     }

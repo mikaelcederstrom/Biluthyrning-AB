@@ -1,0 +1,11 @@
+﻿@model Biluthyrning_AB.Models.ViewModels.CustomersListOfAll[]
+@{
+    ViewData["Title"] = "ListOfAll";
+}
+
+<h1>ListOfAll</h1>
+
+@foreach (var item in Model)
+{
+    <p>@item.PersonNumber, @item.LastName, @item.FirstName</p>
+}

@@ -10,19 +10,19 @@ namespace Biluthyrning_AB.Models
 {
     public class CarsService
     {
-        const string MessageKey = "Message";
+
         public CarsService(BiluthyrningContext context)
         {
             this.context = context;
         }
         readonly BiluthyrningContext context;
 
-        internal CarsRentVM DropDownListForCarType(string message)
+        internal CarsRentVM DropDownListForCarType()
         {
-            Cars[] x = GetAllCarTypesFromDB();
+            Cars[] x = GetAllAvailableCarsFromDB();
             var viewModel = new CarsRentVM();
 
-            viewModel.TempMessage = message;
+
             viewModel.ListOfCarTypes = new SelectListItem[x.Length];
 
             for (int i = 0; i < x.Length; i++)
@@ -36,6 +36,28 @@ namespace Biluthyrning_AB.Models
             return viewModel;
         }
 
+
+
+        internal CarsReceiptVM CreateReceipt(int orderID, CarsRentVM viewModel)
+        {
+            return new CarsReceiptVM
+            {
+                Id = orderID,
+                KilometerBeforeRental = context.Cars
+                    .Where(c => c.Id == viewModel.SelectedCarTypeValue)
+                    .Select(c => c.Kilometer)
+                    .FirstOrDefault(),
+                Personnumber = viewModel.personNumber,
+                RentalDate = viewModel.Date
+            };
+        }
+
+        internal int GetKmFromOrderID(int orderNumber)
+        {
+            return context.Cars
+                .Where(c => c.Orders.Any(o => o.Id == orderNumber)).Select(c => c.Kilometer).SingleOrDefault();
+        }
+
         internal int AddOrderToDB(CarsRentVM viewModel)
         {
             Orders order = new Orders()
@@ -46,15 +68,59 @@ namespace Biluthyrning_AB.Models
                  .Where(o => o.Id == viewModel.SelectedCarTypeValue)
                  .Select(o => o.Kilometer)
                  .FirstOrDefault(),
-                 Personnumber = viewModel.personNumber
+                CustomerId = context.Customers
+                 .Where(p => p.PersonNumber == viewModel.personNumber)
+                 .Select(p => p.Id)
+                 .FirstOrDefault()
             };
             context.Orders.Add(order);
             context.SaveChanges();
+            UpdateAvailability(viewModel.SelectedCarTypeValue);
 
-            return order.Id;       
+            return order.Id;
         }
 
-        internal void ReturnOrderInDB(CarsReturnVM viewModel)
+        internal CarsListOfAllVM[] GetAllCarsFromDB()
+        {
+            return context.Cars
+                .Select(c => new CarsListOfAllVM
+                {
+                    AvailableForRent = c.AvailableForRent,
+                    CarType = c.CarType,
+                    Id = c.Id,
+                    Kilometer = c.Kilometer,
+                    Registrationnumber = c.Registrationnumber,
+                    customer = c.Orders
+                     .Where(o => o.CarId == c.Id)
+                    .Select(o => new Customers
+                    {
+                        FirstName = o.Customer.FirstName,
+                        LastName = o.Customer.LastName,
+                        PersonNumber = o.Customer.PersonNumber
+                    }).FirstOrDefault()
+                })
+                .OrderBy(c => c.AvailableForRent)
+                .ToArray();
+        }
+
+        private void UpdateAvailability(int carID)
+        {
+            Cars car = context.Cars
+           .Where(c => c.Id == carID)
+           .Select(c => new Cars
+           {
+               Kilometer = c.Kilometer,
+               CarType = c.CarType,
+               Id = c.Id,
+               Registrationnumber = c.Registrationnumber,
+               AvailableForRent = false
+
+           }).SingleOrDefault();
+            context.Update(car);
+            context.SaveChanges();
+        }
+
+        internal CarsConfReturnVM ReturnOrderInDB(CarsReturnVM viewModel)
         {
             Orders order = GetOrderByID(viewModel.OrderNumber);
             order.ReturnDate = viewModel.Date;
@@ -63,9 +129,64 @@ namespace Biluthyrning_AB.Models
             context.Orders.Update(order);
             context.SaveChanges();
 
-            UpdateCarKMByOrderID(viewModel.OrderNumber);               
-                
+            UpdateCarKMByOrderID(viewModel.OrderNumber);
+
+            return new CarsConfReturnVM
+            {
+                CarReturned = true,
+                ReturnDate = viewModel.Date,
+                KilometerAfterRental = viewModel.Kilometer,
+                Id = viewModel.OrderNumber,
+
+                KilometerBeforeRental = context.Orders
+                     .Where(o => o.Id == viewModel.OrderNumber)
+                     .Select(o => o.KilometerBeforeRental)
+                     .FirstOrDefault(),
+                RentalDate = context.Orders
+                     .Where(o => o.Id == viewModel.OrderNumber)
+                     .Select(o => o.RentalDate)
+                     .FirstOrDefault(),
+                rentalPrice = CalcRentalPrice(context.Orders.Select(o => o.CarId).FirstOrDefault(), viewModel.Kilometer, context.Orders
+                     .Where(o => o.Id == viewModel.OrderNumber)
+                     .Select(o => o.KilometerBeforeRental)
+                     .FirstOrDefault(), viewModel.Date, context.Orders
+                     .Where(o => o.Id == viewModel.OrderNumber)
+                     .Select(o => o.RentalDate)
+                     .FirstOrDefault())
+            };
         }
+
+        private double CalcRentalPrice(int carID, int kilometerAfterRental, int kilometerBeforeRental, DateTime returnDate, DateTime rentalDate)
+        {
+            const double kmPrice = 11.5;
+            const double baseDayRental = 200.0;
+            string x = GetCarTypeByID(carID);
+            double numberOfDays = (returnDate.Date - rentalDate.Date).TotalDays;
+            double numberOfKm = (kilometerAfterRental - kilometerBeforeRental);
+
+
+            switch (x)
+            {
+                case "Small car":
+                    return baseDayRental * numberOfDays;
+                case "Van":
+                    return baseDayRental * numberOfDays * 1.2 * kmPrice * numberOfKm;
+                case "Minibus":
+                    return baseDayRental * numberOfDays * 1.7 + (kmPrice * numberOfKm * 1.5);
+                default:
+                    return 0.0;
+            }
+        }
+
+        private string GetCarTypeByID(int carID)
+        {
+
+            return context.Cars
+                .Where(c => c.Id == carID)
+                .Select(c => c.CarType)
+                .FirstOrDefault();
+        }
+
 
         private void UpdateCarKMByOrderID(int orderNumber)
         {
@@ -76,9 +197,58 @@ namespace Biluthyrning_AB.Models
                     Kilometer = context.Orders.Where(o => o.Id == orderNumber).Select(o => o.KilometerAfterRental).SingleOrDefault(),
                     CarType = c.CarType,
                     Id = c.Id,
-                    Registrationnumber = c.Registrationnumber
+                    Registrationnumber = c.Registrationnumber,
+                    AvailableForRent = true,
+                    //Cleaning = true,
+                    //NumberOfRentals = c.NumberOfRentals + 1,
                 }).SingleOrDefault();
+
+            ListCarForCleaningByID(car.Id);
+
+            if (car.Kilometer >= 2000)
+                RetireCarByID(car.Id);
+
+
+            if (context.Orders.Where(o => o.CarId == car.Id).Count() % 3 == 0)
+                ListCarForServiceByID(car.Id);
+
             context.Update(car);
+            context.SaveChanges();
+        }
+
+        private void ListCarForCleaningByID(int id)
+        {
+            CarCleaning cc = new CarCleaning
+            {
+                CarId = id,
+                FlaggedForCleaningDate = DateTime.Now,
+                CleaningDone = false
+            };
+            context.Add(cc);
+            context.SaveChanges();
+        }
+
+        private void ListCarForServiceByID(int id)
+        {
+            CarService cs = new CarService
+            {
+                CarId = id,
+                FlaggedForServiceDate = DateTime.Now,
+                ServiceDone = false
+            };
+            context.Add(cs);
+            context.SaveChanges();
+        }
+
+        private void RetireCarByID(int id)
+        {
+            CarRetire cr = new CarRetire
+            {
+                CarId = id,
+                FlaggedForRetiringDate = DateTime.Now,
+                Retired = false
+            };
+            context.Add(cr);
             context.SaveChanges();
         }
 
@@ -91,10 +261,10 @@ namespace Biluthyrning_AB.Models
                     CarId = o.CarId,
                     Id = o.Id,
                     KilometerBeforeRental = o.KilometerBeforeRental,
-                    Personnumber = o.Personnumber,
+                    CustomerId = o.CustomerId,
                     RentalDate = o.RentalDate,
 
-                }).SingleOrDefault(); 
+                }).SingleOrDefault();
         }
 
         private Cars[] GetAllCarTypesFromDB()
@@ -106,10 +276,26 @@ namespace Biluthyrning_AB.Models
                   Id = p.Id,
                   CarType = p.CarType,
                   Kilometer = p.Kilometer,
-                  Registrationnumber = p.Registrationnumber                    
-                  
+                  Registrationnumber = p.Registrationnumber
+
               })
               .ToArray();
+        }
+
+        private Cars[] GetAllAvailableCarsFromDB()
+        {
+            return context.Cars
+         .Where(p => p.AvailableForRent == true && !p.CarCleaning.Any(o => o.CleaningDone == false) && !p.CarRetire.Any(x => x.CarId == p.Id))
+         .Select(p => new Cars
+         {
+             Id = p.Id,
+             CarType = p.CarType,
+             Kilometer = p.Kilometer,
+             Registrationnumber = p.Registrationnumber
+
+         })
+         .OrderBy(p => p.CarType)
+         .ToArray();
         }
     }
 }
