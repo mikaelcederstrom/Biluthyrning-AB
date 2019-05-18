@@ -103,6 +103,38 @@ namespace Biluthyrning_AB.Models
                 .ToArray();
         }
 
+        internal void UpdateCleaningToDone(int id)
+        {
+            CarCleaning cc = context.CarCleaning
+                .Where(c => c.Id == id)
+                .Select(c => new CarCleaning
+                {
+                    Id = c.Id,
+                    CleaningDone = true,
+                    CleaningDoneDate = DateTime.Now,
+                    CarId = c.CarId,
+                    FlaggedForCleaningDate = c.FlaggedForCleaningDate
+
+
+
+                }).SingleOrDefault();
+            context.Update(cc);
+            context.SaveChanges();
+        }
+
+        internal CarCleaningVM[] GetCleaningListFromDB()
+        {
+            return context.CarCleaning
+                .Select(s => new CarCleaningVM
+                {
+                    CarId = s.CarId,
+                    CleaningDone = s.CleaningDone,
+                    CleaningDoneDate = s.CleaningDoneDate,
+                    CleaningId = s.Id,
+                    FlaggedForCleaningDate = s.FlaggedForCleaningDate
+                }).ToArray();
+        }
+
         internal CarServiceVM[] GetServiceListFromDB()
         {
             return context.CarService
@@ -131,9 +163,11 @@ namespace Biluthyrning_AB.Models
           .Where(s => s.Id == serviceId)
           .Select(c => new CarService
           {
-              
-             ServiceDone = true,
-             ServiceDoneDate = DateTime.Now
+              Id = c.Id,
+              CarId = c.CarId,
+              FlaggedForServiceDate = c.FlaggedForServiceDate,
+              ServiceDone = true,
+              ServiceDoneDate = DateTime.Now
 
           }).SingleOrDefault();
             context.Update(cs);
@@ -186,7 +220,8 @@ namespace Biluthyrning_AB.Models
                 rentalPrice = CalcRentalPrice(context.Orders.Select(o => o.CarId).FirstOrDefault(), viewModel.Kilometer, context.Orders
                      .Where(o => o.Id == viewModel.OrderNumber)
                      .Select(o => o.KilometerBeforeRental)
-                     .FirstOrDefault(), viewModel.Date, context.Orders
+                     .FirstOrDefault(), viewModel.Date,
+                     context.Orders
                      .Where(o => o.Id == viewModel.OrderNumber)
                      .Select(o => o.RentalDate)
                      .FirstOrDefault())

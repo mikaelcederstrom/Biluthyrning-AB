@@ -3,7 +3,7 @@
     ViewData["Title"] = "Service";
 }
 
-<h1>Service</h1>
+<partial name="_MenuBarMaintenance" /> 
 
 @foreach (var item in Model)
 {
@@ -17,16 +17,8 @@
     {
         <p style="color: red">@item.CarType, @item.Registrationnumber, @item.Kilometer, @item.FlaggedForServiceDate</p>
 
-        <form asp-controller="Cars" asp-action="Service" method="post">
-            
-            
-            <button value="Gör service" id="@item.Id" />
-            @*<label asp-for=""></label>
-            <input asp-for="personNumber" />
-            <span asp-validation-for="personNumber"> </span>*@
-            
-            <br />
-            <input type="submit" value="Add" />
+        <form asp-controller="Cars" asp-action="Service" asp-route-id="@item.Id" method="post">
+            <input type="submit" value="Tvätta" />
         </form>
     }
 }

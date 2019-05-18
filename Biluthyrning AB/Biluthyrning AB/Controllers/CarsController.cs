@@ -94,29 +94,42 @@ namespace Biluthyrning_AB.Controllers
         [Route("~/service")]
         public IActionResult Service()
         {
-            
+
             return View(service.GetServiceListFromDB());
         }
 
         [HttpPost]
-        [Route("~/service")]
-        public IActionResult Service(int serviceId)
+        [Route("~/service/")]
+        public IActionResult Service(int id)
         {
-            //viewModel.KilometerBeforeRental = service.GetKmFromOrderID(viewModel.OrderNumber);
-
-
-            //if (viewModel.Kilometer < viewModel.KilometerBeforeRental)
-            //    return Content("Bilen kan inte lämnas tillbaka med en mätarställning som är lägre än vid hyrning"); // Return partialview, med texten 
-            //if (!ModelState.IsValid || viewModel.Kilometer < viewModel.KilometerBeforeRental)
-            //    return View(viewModel);
-
-            //CarsConfReturnVM cr = service.ReturnOrderInDB(viewModel);
-            //return RedirectToAction("ConfReturn", "Cars", cr);
-
-            service.UpdateServiceToDone(serviceId);
+            service.UpdateServiceToDone(id);
 
             return RedirectToAction("Service", "Cars");
         }
-        
+
+        [HttpGet]
+        [Route("~/cleaning")]
+        public IActionResult Cleaning()
+        {
+            
+            return View(service.GetCleaningListFromDB());
+        }
+
+        [HttpPost]
+        [Route("~/Cleaning/")]
+        public IActionResult Cleaning(int id)
+        {
+            service.UpdateCleaningToDone(id);
+
+            return RedirectToAction("Cleaning", "Cars");
+        }
+
+        [HttpGet]
+        [Route("~/maintenance")]
+        public IActionResult Maintenance()
+        {
+
+            return View();
+        }
     }
 }
