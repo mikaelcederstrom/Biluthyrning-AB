@@ -4,7 +4,8 @@
     ViewData["Title"] = "Lägg till kund";
 }
 
-<h1>Lägg till kund</h1>
+<partial name="_MenuBarCustomers" />
+
 
 <form asp-controller="Customers" asp-action="Add" method="post">
 
@@ -12,11 +13,9 @@
     <input asp-for="FirstName" />
     <span asp-validation-for="FirstName"> </span>
 
-
     <label asp-for="LastName"></label>
     <input asp-for="LastName" />
     <span asp-validation-for="LastName"></span>
-
 
     <label asp-for="PersonNumber"></label>
     <input asp-for="PersonNumber" />

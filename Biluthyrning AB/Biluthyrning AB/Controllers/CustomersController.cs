@@ -10,8 +10,6 @@ namespace Biluthyrning_AB.Controllers
 {
     public class CustomersController : Controller
     {
-
-
         public CustomersController(CustomersService service)
         {
             this.service = service;
@@ -24,6 +22,12 @@ namespace Biluthyrning_AB.Controllers
         {
             return View();
         }
+        [Route("~/customers/index")]
+        [HttpGet]
+        public IActionResult Index()
+        {
+            return View();
+        }
 
         [Route("~/add")]
         [HttpPost]
@@ -31,8 +35,14 @@ namespace Biluthyrning_AB.Controllers
         {
             if (!ModelState.IsValid)
                 return View(viewModel);
-
+            try
+            {
             service.AddCustomerToDB(viewModel);
+            }
+            catch (Exception)
+            {
+                return View(viewModel);
+            }
             return RedirectToAction("Home", "Cars");
 
         }
@@ -42,6 +52,14 @@ namespace Biluthyrning_AB.Controllers
         public IActionResult ListOfAll()
         {
             return View(service.GetAllCustomersFromDB());
+
+        }
+
+        [Route("~/customers/details/{id}")]
+        [HttpGet]
+        public IActionResult Details(int id)
+        {            
+            return View(service.GetCustomerDetailsFromDB(id));
 
         }
     }

@@ -118,13 +118,13 @@ namespace Biluthyrning_AB.Models.Entities
                     .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.CarId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Orders__CarID__6D0D32F4");
+                    .HasConstraintName("FK__Orders__CarID__160F4887");
 
                 entity.HasOne(d => d.Customer)
                     .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.CustomerId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Orders__Customer__6E01572D");
+                    .HasConstraintName("FK__Orders__Customer__17036CC0");
             });
         }
     }

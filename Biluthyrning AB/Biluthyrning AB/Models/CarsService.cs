@@ -1,4 +1,5 @@
-﻿using Biluthyrning_AB.Models.Entities;
+﻿using Biluthyrning_AB.Models.Data;
+using Biluthyrning_AB.Models.Entities;
 using Biluthyrning_AB.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
@@ -36,7 +37,29 @@ namespace Biluthyrning_AB.Models
             return viewModel;
         }
 
+        internal CarsListOfAllVM[] CheckCarsAvailabilityDuringPeriod(RentPeriodData viewModel)
+        {
+            // 
+            CarsListOfAllVM[] x = context.Orders
+                .Where(o => !(o.Car.Orders.Any()) || (!(o.RentalDate.Ticks > viewModel.RentalDate.Ticks) && !(o.ReturnDate.Ticks < viewModel.ReturnDate.Ticks) && o.CarReturned == (false)))
+                .Select(o => new CarsListOfAllVM
+                {
+                    AvailableForRent = o.Car.AvailableForRent,
+                    CarType = o.Car.CarType,
+                    Kilometer = o.Car.Kilometer,
+                    Id = o.Car.Id,
+                    Registrationnumber = o.Car.Registrationnumber
 
+                }).ToArray();
+
+            //CarsListOfAllVM[] y = context.Cars
+            //    .Where(c => !c.Orders.Any()) || (context.Orders.Where(o => !(o.RentalDate.Ticks > viewModel.RentalDate.Ticks) && !(o.ReturnDate.Ticks < viewModel.ReturnDate.Ticks) && o.CarReturned == (false))
+            //    .Select(c => new CarsListOfAllVM{
+            //        AvailableForRent = c.)
+           
+
+            return x;
+        }
 
         internal CarsReceiptVM CreateReceipt(int orderID, CarsRentVM viewModel)
         {
@@ -44,11 +67,12 @@ namespace Biluthyrning_AB.Models
             {
                 Id = orderID,
                 KilometerBeforeRental = context.Cars
-                    .Where(c => c.Id == viewModel.SelectedCarTypeValue)
+                    //.Where(c => c.Id == viewModel.SelectedCarTypeValue)
+                    .Where(c => c.Id == viewModel.CarId)
                     .Select(c => c.Kilometer)
                     .FirstOrDefault(),
                 Personnumber = viewModel.personNumber,
-                RentalDate = viewModel.Date
+                RentalDate = viewModel.RentalDate
             };
         }
 
@@ -62,10 +86,13 @@ namespace Biluthyrning_AB.Models
         {
             Orders order = new Orders()
             {
-                CarId = viewModel.SelectedCarTypeValue,
-                RentalDate = viewModel.Date,
+                //CarId = viewModel.SelectedCarTypeValue,
+                CarId = viewModel.CarId,
+                RentalDate = viewModel.RentalDate,
+                ReturnDate = viewModel.ReturnDate,
                 KilometerBeforeRental = context.Cars
-                 .Where(o => o.Id == viewModel.SelectedCarTypeValue)
+                 .Where(o => o.Id == viewModel.CarId)
+                 //.Where(o => o.Id == viewModel.SelectedCarTypeValue)
                  .Select(o => o.Kilometer)
                  .FirstOrDefault(),
                 CustomerId = context.Customers
@@ -75,7 +102,8 @@ namespace Biluthyrning_AB.Models
             };
             context.Orders.Add(order);
             context.SaveChanges();
-            UpdateAvailability(viewModel.SelectedCarTypeValue);
+            //UpdateAvailability(viewModel.SelectedCarTypeValue);
+            UpdateAvailability(viewModel.CarId);
 
             return order.Id;
         }
@@ -96,10 +124,12 @@ namespace Biluthyrning_AB.Models
                     {
                         FirstName = o.Customer.FirstName,
                         LastName = o.Customer.LastName,
-                        PersonNumber = o.Customer.PersonNumber
+                        PersonNumber = o.Customer.PersonNumber,
+                        Id = o.CustomerId
                     }).FirstOrDefault()
                 })
                 .OrderBy(c => c.AvailableForRent)
+                .ThenBy(c => c.CarType)
                 .ToArray();
         }
 
@@ -114,9 +144,6 @@ namespace Biluthyrning_AB.Models
                     CleaningDoneDate = DateTime.Now,
                     CarId = c.CarId,
                     FlaggedForCleaningDate = c.FlaggedForCleaningDate
-
-
-
                 }).SingleOrDefault();
             context.Update(cc);
             context.SaveChanges();

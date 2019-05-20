@@ -35,10 +35,37 @@ namespace Biluthyrning_AB.Models
                 {
                     FirstName = c.FirstName,
                     LastName = c.LastName,
-                    PersonNumber = c.PersonNumber
+                    PersonNumber = c.PersonNumber,
+                    ID = c.Id,
+                    ActiveOrder = c.Orders.Where(o => o.CarReturned == false).Any()
+
                 })
-                .OrderBy(c => c.PersonNumber)
+                .OrderByDescending(c => c.ActiveOrder).ThenBy(c => c.PersonNumber)
                 .ToArray();
+        }
+
+        internal CustomersDetailsVM GetCustomerDetailsFromDB(int id)
+        {
+            return context.Customers
+                .Where(c => c.Id == id)
+                .Select(c => new CustomersDetailsVM
+                {
+                    FirstName = c.FirstName,
+                    LastName = c.LastName,
+                    Id = c.Id,
+                    PersonNumber = c.PersonNumber,
+                    Orders = context.Orders
+                    .Where(o => o.CustomerId == id)
+                    .Select(o => new CustomersDetailsOrders
+                    {
+                         CarReturned = o.CarReturned,
+                         Id = o.Id,
+                         KilometerAfterRental = o.KilometerAfterRental,
+                         KilometerBeforeRental =  o.KilometerBeforeRental,
+                         RentalDate = o.RentalDate,
+                         ReturnDate = o.ReturnDate
+                    }).ToArray()                    
+                }).FirstOrDefault();            
         }
     }
 }

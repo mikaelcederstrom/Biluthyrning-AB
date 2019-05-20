@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Biluthyrning_AB.Models;
+using Biluthyrning_AB.Models.Data;
 using Biluthyrning_AB.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,6 +26,25 @@ namespace Biluthyrning_AB.Controllers
         {
             return View();
         }
+        [HttpPost]
+        [Route("~/AvailableCars")]
+        public IActionResult AvailableCars([FromBody]RentPeriodData viewModel)
+        {
+            return Json(new { success = true });
+
+            //return RedirectToAction(nameof(AvailableCars));
+
+        }
+        [HttpGet]
+        [Route("~/AvailableCars")]
+        public IActionResult AvailableCars()
+        {
+
+            //CarsListOfAllVM[] x = service.CheckCarsAvailabilityDuringPeriod(viewModel);
+            CarsListOfAllVM[] x = service.GetAllCarsFromDB();
+            return PartialView("_AvailableCars", x);
+
+        }
 
         [HttpGet]
         [Route("~/rent/")]
@@ -37,6 +57,12 @@ namespace Biluthyrning_AB.Controllers
         [Route("~/rent")]
         public IActionResult Rent(CarsRentVM viewModel)
         {
+            //CarsRentVM z = service.DropDownListForCarType();
+            //for (int i = 0; i < z.ListOfCarTypes.Length; i++)
+            //{
+            //    viewModel.ListOfCarTypes[i] = z.ListOfCarTypes[i];
+            //}
+            
             if (!ModelState.IsValid)
                 return View(viewModel);
             

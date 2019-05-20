@@ -18,7 +18,10 @@ namespace Biluthyrning_AB.Models.ViewModels
         public string Registrationnumber { get; set; }
         public int Kilometer { get; set; }
 
-               
+
+        public int CarId { get; set; }
+
+
         [Display(Name = "Välj bil")]
         public SelectListItem[] ListOfCarTypes { get; set; }
 
@@ -26,7 +29,11 @@ namespace Biluthyrning_AB.Models.ViewModels
 
         [Display(Name = "Datum för hyrning")]
         [Range(typeof(DateTime), "1/1/2019", "1/1/2021", ErrorMessage = "Måste välja datum mellan 2019-01-01 & 2021-01-01")]
-        public DateTime Date { get; set; }
+        public DateTime RentalDate { get; set; }
+
+        [Display(Name = "Datum för återlämning")]
+        [Range(typeof(DateTime), "1/1/2019", "1/1/2021", ErrorMessage = "Måste välja datum mellan 2019-01-01 & 2021-01-01")]
+        public DateTime ReturnDate { get; set; }
 
     }
 }

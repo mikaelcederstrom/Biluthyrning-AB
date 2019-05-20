@@ -688,3 +688,7 @@ input {
     background-color: DodgerBlue !important;
     color: #ffffff;
 }
+
+.ghost {
+    visibility: hidden;
+}

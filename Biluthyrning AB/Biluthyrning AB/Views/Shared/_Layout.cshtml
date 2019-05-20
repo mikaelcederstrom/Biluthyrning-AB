@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width" />
     <title>@ViewBag.Title</title>
     <link rel="stylesheet" href="~/css/skeleton.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
 </head>
 <body>
@@ -14,10 +15,9 @@
             <li><a asp-controller="Cars" asp-action="Home">Home</a></li>
             <li><a asp-controller="Cars" asp-action="Rent">Hyr bil</a></li>
             <li><a asp-controller="Cars" asp-action="Return">Lämna tillbaka bil</a></li>
-            <li><a asp-controller="Customers" asp-action="Add">Lägg till kund</a></li>
-            <li><a asp-controller="Customers" asp-action="ListOfAll">Lista med samtliga kunder</a></li>
+            <li><a asp-controller="Customers" asp-action="Index">Kundrelaterat</a></li>
             <li><a asp-controller="Cars" asp-action="ListOfAll">Lista med bilar</a></li>
-            <li><a asp-controller="Cars" asp-action="Maintenance">Underhålls</a></li>
+            <li><a asp-controller="Cars" asp-action="Maintenance">Underhåll</a></li>
         </ul>
     </div>
     <div>

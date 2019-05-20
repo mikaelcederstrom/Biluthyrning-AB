@@ -4,12 +4,5 @@
     ViewData["Title"] = "ListOfAll";
 }
 
-<h1>ListOfAll</h1>
-<p>Biltyp       Regnr       Körda Km        Uthyrd</p>
-@foreach (var item in Model)
-{
-    <p>@item.CarType    @item.Registrationnumber    @item.Kilometer @if (@item.AvailableForRent == false)
-                {<span>Ja, till @item.customer.FirstName @item.customer.LastName (@item.customer.PersonNumber)</span> }
-                @if(@item.AvailableForRent == true){<span>Nej</span>}</p>
-}
+<partial name="_ListOfCars" />
 
