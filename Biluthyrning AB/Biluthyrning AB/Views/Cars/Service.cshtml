@@ -3,24 +3,7 @@
     ViewData["Title"] = "Service";
 }
 
-<partial name="_MenuBarMaintenance" /> 
-
-@foreach (var item in Model)
-{
-
-    @if (@item.ServiceDone == true)
-    {
-        <p style="color: green">@item.CarType, @item.Registrationnumber, @item.Kilometer, @item.FlaggedForServiceDate, @item.ServiceDoneDate</p>
-    }
-
-    @if (@item.ServiceDone == false || @item.ServiceDone == null)
-    {
-        <p style="color: red">@item.CarType, @item.Registrationnumber, @item.Kilometer, @item.FlaggedForServiceDate</p>
-
-        <form asp-controller="Cars" asp-action="Service" asp-route-id="@item.Id" method="post">
-            <input type="submit" value="Tvätta" />
-        </form>
-    }
-}
+<partial name="_MenuBarMaintenance" />
+<partial name="_ServiceList" />
 
 

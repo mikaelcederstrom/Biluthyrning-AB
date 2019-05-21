@@ -41,7 +41,7 @@ namespace Biluthyrning_AB.Controllers
         {
 
             //CarsListOfAllVM[] x = service.CheckCarsAvailabilityDuringPeriod(viewModel);
-            CarsListOfAllVM[] x = service.GetAllCarsFromDB();
+            CarsListOfAllVM[] x = service.CheckCarsAvailabilityDuringPeriod();
             return PartialView("_AvailableCars", x);
 
         }

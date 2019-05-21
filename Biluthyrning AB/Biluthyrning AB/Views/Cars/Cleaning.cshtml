@@ -3,22 +3,4 @@
     ViewData["Title"] = "Cleaning";
 }
 <partial name="_MenuBarMaintenance" />
-
-@foreach (var item in Model)
-{
-    @if (item.CleaningDone == true)
-    {
-        <p style="color: green">carid = @item.CarId, cleaningdate =  @item.CleaningDoneDate, cleaningid = @item.CleaningId, flagged for cleaning = @item.FlaggedForCleaningDate</p>
-
-    }
-    @if (item.CleaningDone == false || item.CleaningDone == null)
-    {
-        <p style="color: red">
-            carid = @item.CarId,  cleaningid = @item.CleaningId, flagged for cleaning = @item.FlaggedForCleaningDate
-            <form asp-controller="Cars" asp-action="Cleaning" asp-route-id="@item.CleaningId" method="post">
-                <input type="submit" value="Tvätta" />
-            </form>
-        </p>
-
-    }
-}
+<partial name="_CleaningList" />

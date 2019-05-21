@@ -36,30 +36,55 @@ namespace Biluthyrning_AB.Models
             }
             return viewModel;
         }
-
-        internal CarsListOfAllVM[] CheckCarsAvailabilityDuringPeriod(RentPeriodData viewModel)
+        internal CarsListOfAllVM[] CheckCarsAvailabilityDuringPeriod()
         {
-            // 
-            CarsListOfAllVM[] x = context.Orders
-                .Where(o => !(o.Car.Orders.Any()) || (!(o.RentalDate.Ticks > viewModel.RentalDate.Ticks) && !(o.ReturnDate.Ticks < viewModel.ReturnDate.Ticks) && o.CarReturned == (false)))
-                .Select(o => new CarsListOfAllVM
+            return context.Cars
+                .Where(c => (c.CarCleaning.All(k => k.CleaningDone == true) || c.CarCleaning.Count == 0) && (!c.CarRetire.Any() || c.CarRetire.Count == 0) && (c.CarService.All(s => !s.ServiceDone == false) || c.CarService.Count == 0))
+                .Select(c => new CarsListOfAllVM
                 {
-                    AvailableForRent = o.Car.AvailableForRent,
-                    CarType = o.Car.CarType,
-                    Kilometer = o.Car.Kilometer,
-                    Id = o.Car.Id,
-                    Registrationnumber = o.Car.Registrationnumber
 
-                }).ToArray();
-
-            //CarsListOfAllVM[] y = context.Cars
-            //    .Where(c => !c.Orders.Any()) || (context.Orders.Where(o => !(o.RentalDate.Ticks > viewModel.RentalDate.Ticks) && !(o.ReturnDate.Ticks < viewModel.ReturnDate.Ticks) && o.CarReturned == (false))
-            //    .Select(c => new CarsListOfAllVM{
-            //        AvailableForRent = c.)
-           
-
-            return x;
+                    AvailableForRent = c.AvailableForRent,
+                    CarType = c.CarType,
+                    Id = c.Id,
+                    Kilometer = c.Kilometer,
+                    Registrationnumber = c.Registrationnumber,
+                    customer = c.Orders
+                     .Where(o => o.CarId == c.Id)
+                    .Select(o => new Customers
+                    {
+                        FirstName = o.Customer.FirstName,
+                        LastName = o.Customer.LastName,
+                        PersonNumber = o.Customer.PersonNumber,
+                        Id = o.CustomerId
+                    }).FirstOrDefault()
+                })
+                .OrderBy(c => c.AvailableForRent)
+                .ThenBy(c => c.CarType)
+                .ToArray();
         }
+        //internal CarsListOfAllVM[] CheckCarsAvailabilityDuringPeriod(RentPeriodData viewModel)
+        //{
+        //    // 
+        //    CarsListOfAllVM[] x = context.Orders
+        //        .Where(o => !(o.Car.Orders.Any()) || (!(o.RentalDate.Ticks > viewModel.RentalDate.Ticks) && !(o.ReturnDate.Ticks < viewModel.ReturnDate.Ticks) && o.CarReturned == (false)))
+        //        .Select(o => new CarsListOfAllVM
+        //        {
+        //            AvailableForRent = o.Car.AvailableForRent,
+        //            CarType = o.Car.CarType,
+        //            Kilometer = o.Car.Kilometer,
+        //            Id = o.Car.Id,
+        //            Registrationnumber = o.Car.Registrationnumber
+
+        //        }).ToArray();
+
+        //    //CarsListOfAllVM[] y = context.Cars
+        //    //    .Where(c => !c.Orders.Any()) || (context.Orders.Where(o => !(o.RentalDate.Ticks > viewModel.RentalDate.Ticks) && !(o.ReturnDate.Ticks < viewModel.ReturnDate.Ticks) && o.CarReturned == (false))
+        //    //    .Select(c => new CarsListOfAllVM{
+        //    //        AvailableForRent = c.)
+
+
+        //    return x;
+        //}
 
         internal CarsReceiptVM CreateReceipt(int orderID, CarsRentVM viewModel)
         {
@@ -221,7 +246,10 @@ namespace Biluthyrning_AB.Models
         internal CarsConfReturnVM ReturnOrderInDB(CarsReturnVM viewModel)
         {
             Orders order = GetOrderByID(viewModel.OrderNumber);
-            order.ReturnDate = viewModel.Date;
+            if (order.ReturnDate < viewModel.Date)
+            {
+                order.ReturnDate = viewModel.Date;
+            }
             order.CarReturned = true;
             order.KilometerAfterRental = viewModel.Kilometer;
             context.Orders.Update(order);
@@ -302,14 +330,15 @@ namespace Biluthyrning_AB.Models
                     //NumberOfRentals = c.NumberOfRentals + 1,
                 }).SingleOrDefault();
 
-            ListCarForCleaningByID(car.Id);
 
             if (car.Kilometer >= 2000)
                 RetireCarByID(car.Id);
-
-
-            if (context.Orders.Where(o => o.CarId == car.Id).Count() % 3 == 0)
-                ListCarForServiceByID(car.Id);
+            else
+            {
+                ListCarForCleaningByID(car.Id);
+                if (context.Orders.Where(o => o.CarId == car.Id).Count() % 3 == 0)
+                    ListCarForServiceByID(car.Id);
+            }
 
             context.Update(car);
             context.SaveChanges();
@@ -362,6 +391,7 @@ namespace Biluthyrning_AB.Models
                     KilometerBeforeRental = o.KilometerBeforeRental,
                     CustomerId = o.CustomerId,
                     RentalDate = o.RentalDate,
+                    ReturnDate = o.ReturnDate
 
                 }).SingleOrDefault();
         }

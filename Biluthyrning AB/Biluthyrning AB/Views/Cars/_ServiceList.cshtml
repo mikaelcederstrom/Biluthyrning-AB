@@ -1,4 +1,4 @@
-﻿@model Biluthyrning_AB.Models.ViewModels.CarsListOfAllVM[]
+﻿@model Biluthyrning_AB.Models.ViewModels.CarServiceVM[]
 
 <div class="container">
     <div class="row" style="background-color: lightgray">
@@ -6,13 +6,16 @@
             Biltyp
         </div>
         <div class="col-sm">
-            Regnr
+            RegNr
         </div>
         <div class="col-sm">
-            Körda Km
+            Kilometer
         </div>
         <div class="col-sm">
-            Uthyrd?
+            Inlämnad för service
+        </div>
+        <div class="col-sm">
+            Service utförd
         </div>
     </div>
 
@@ -21,7 +24,6 @@
         if (i % 2 == 0)
         {
             <div class="row" style="background-color: bisque">
-
                 <div class="col-sm">
                     @Model[i].CarType
                 </div>
@@ -32,13 +34,18 @@
                     @Model[i].Kilometer
                 </div>
                 <div class="col-sm">
-                    @if (@Model[i].AvailableForRent == false)
+                    @Model[i].FlaggedForServiceDate
+                </div>
+                <div class="col-sm">
+                    @if (@Model[i].ServiceDone == true)
                     {
-                        <span>Ja, till @Model[i].customer.FirstName @Model[i].customer.LastName (<a asp-controller="Customers" asp-action="Details" asp-route-id="@Model[i].customer.Id">@Model[i].customer.PersonNumber</a>)</span>
+                        <span>Ja, @Model[i].ServiceDoneDate</span>
                     }
-                    @if (@Model[i].AvailableForRent == true)
+                    @if (@Model[i].ServiceDone == false)
                     {
-                        <span>Nej</span>
+                        <form asp-controller="Cars" asp-action="Service" asp-route-id="@Model[i].Id" method="post">
+                            <input type="submit" value="Serva" />
+                        </form>
                     }
                 </div>
             </div>
@@ -46,7 +53,7 @@
 
         if (i % 2 == 1)
         {
-            <div class="row" style="background-color: white">
+            <div class="row" style="background-color: bisque">
                 <div class="col-sm">
                     @Model[i].CarType
                 </div>
@@ -57,13 +64,18 @@
                     @Model[i].Kilometer
                 </div>
                 <div class="col-sm">
-                    @if (@Model[i].AvailableForRent == false)
+                    @Model[i].FlaggedForServiceDate
+                </div>
+                <div class="col-sm">
+                    @if (@Model[i].ServiceDone == true)
                     {
-                        <span>Ja, till @Model[i].customer.FirstName @Model[i].customer.LastName (<a asp-controller="Customers" asp-action="Details" asp-route-id="@Model[i].customer.Id">@Model[i].customer.PersonNumber</a>)</span>
+                        <span>Ja, @Model[i].ServiceDoneDate</span>
                     }
-                    @if (@Model[i].AvailableForRent == true)
+                    @if (@Model[i].ServiceDone == false)
                     {
-                        <span>Nej</span>
+                        <form asp-controller="Cars" asp-action="Service" asp-route-id="@Model[i].Id" method="post">
+                            <input type="submit" value="Serva" />
+                        </form>
                     }
                 </div>
             </div>
