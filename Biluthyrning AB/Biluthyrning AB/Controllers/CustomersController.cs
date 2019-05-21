@@ -16,20 +16,20 @@ namespace Biluthyrning_AB.Controllers
         }
         readonly CustomersService service;
 
-        [Route("~/add")]
-        [HttpGet]
-        public IActionResult Add()
-        {
-            return View();
-        }
         [Route("~/customers/index")]
         [HttpGet]
         public IActionResult Index()
         {
             return View();
         }
+        [Route("~/customers/add")]
+        [HttpGet]
+        public IActionResult Add()
+        {
+            return View();
+        }
 
-        [Route("~/add")]
+        [Route("~/customers/add")]
         [HttpPost]
         public IActionResult Add(CustomersAddVM viewModel)
         {

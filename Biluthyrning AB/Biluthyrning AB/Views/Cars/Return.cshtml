@@ -3,26 +3,27 @@
     ViewData["Title"] = "Return";
 }
 
-<h1>Return</h1>
-
-<form asp-controller="Cars" asp-action="Return" method="post">
-
-
-    <label asp-for="Kilometer"></label><br />
-    <input asp-for="Kilometer" /><br />
-    <span asp-validation-for="Kilometer"> </span>
-
-    <label asp-for="OrderNumber"></label><br />
-    <input asp-for="OrderNumber" /><br />
-    <span asp-validation-for="OrderNumber"> </span>
+<div style="text-align: center">
+    <h2>Fyll i uppgifter för återlämning av bil</h2><br />
+    <form asp-controller="Cars" asp-action="Return" method="post">
 
 
-    <label asp-for="Date"></label><br />
-    <input asp-for="Date" /><br />
+        <label asp-for="Kilometer"></label><br />
+        <input asp-for="Kilometer" style="width: 165px"/><br />
+        <span asp-validation-for="Kilometer"> </span>
 
-    <span asp-validation-for="Date"></span>
+        <label asp-for="OrderNumber"></label><br />
+        <input asp-for="OrderNumber" style="width: 165px"/><br />
+        <span asp-validation-for="OrderNumber"> </span>
 
 
-    <br />
-    <input type="submit" value="Lämna tillbaka" />
-</form>
+        <label asp-for="Date"></label><br />
+        <input asp-for="Date" /><br />
+
+        <span asp-validation-for="Date"></span>
+
+
+        <br />
+        <input type="submit" value="Lämna tillbaka" />
+    </form>
+    </div>

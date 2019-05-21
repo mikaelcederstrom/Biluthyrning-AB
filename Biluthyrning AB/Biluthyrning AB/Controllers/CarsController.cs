@@ -11,10 +11,10 @@ namespace Biluthyrning_AB.Controllers
 {
     public class CarsController : Controller
     {
-        
+
         public CarsController(CarsService service)
         {
-            this.service = service;            
+            this.service = service;
         }
         readonly CarsService service;
         public IActionResult Index()
@@ -33,6 +33,29 @@ namespace Biluthyrning_AB.Controllers
             return Json(new { success = true });
 
             //return RedirectToAction(nameof(AvailableCars));
+
+        }
+        [Route("~/cars/add")]
+        [HttpGet]
+        public IActionResult Add()
+        {
+            return View();
+        }
+
+        [Route("~/cars/add")]
+        [HttpPost]
+        public IActionResult Add(CarsAddVM viewModel)
+        {
+            if (!ModelState.IsValid)
+                return View(viewModel);
+
+
+
+            if (!service.AddCarToDB(viewModel))            
+                return View(viewModel);
+            // Ändra till att returnera en partiellvy med att regnr redan är inlagt
+            
+            return RedirectToAction("ListOfAll", "Cars");
 
         }
         [HttpGet]
@@ -62,10 +85,10 @@ namespace Biluthyrning_AB.Controllers
             //{
             //    viewModel.ListOfCarTypes[i] = z.ListOfCarTypes[i];
             //}
-            
+
             if (!ModelState.IsValid)
                 return View(viewModel);
-            
+
             CarsReceiptVM x = service.CreateReceipt(service.AddOrderToDB(viewModel), viewModel);
             return RedirectToAction("Receipt", "Cars", x);
         }
@@ -81,7 +104,7 @@ namespace Biluthyrning_AB.Controllers
         [Route("~/return")]
         public IActionResult Return(CarsReturnVM viewModel)
         {
-            viewModel.KilometerBeforeRental = service.GetKmFromOrderID(viewModel.OrderNumber);                        
+            viewModel.KilometerBeforeRental = service.GetKmFromOrderID(viewModel.OrderNumber);
 
 
             if (viewModel.Kilometer < viewModel.KilometerBeforeRental)
@@ -89,7 +112,7 @@ namespace Biluthyrning_AB.Controllers
             if (!ModelState.IsValid || viewModel.Kilometer < viewModel.KilometerBeforeRental)
                 return View(viewModel);
 
-            CarsConfReturnVM cr =  service.ReturnOrderInDB(viewModel);
+            CarsConfReturnVM cr = service.ReturnOrderInDB(viewModel);
             return RedirectToAction("ConfReturn", "Cars", cr);
         }
 
@@ -129,15 +152,20 @@ namespace Biluthyrning_AB.Controllers
         public IActionResult Service(int id)
         {
             service.UpdateServiceToDone(id);
-
             return RedirectToAction("Service", "Cars");
+        }
+        [HttpPost]
+        public IActionResult ServiceFromCarList(int id)
+        {
+            service.UpdateServiceToDone(id);
+            return RedirectToAction("ListOfAll", "Cars");
         }
 
         [HttpGet]
         [Route("~/cleaning")]
         public IActionResult Cleaning()
         {
-            
+
             return View(service.GetCleaningListFromDB());
         }
 
@@ -146,8 +174,13 @@ namespace Biluthyrning_AB.Controllers
         public IActionResult Cleaning(int id)
         {
             service.UpdateCleaningToDone(id);
-
             return RedirectToAction("Cleaning", "Cars");
+        }
+        [HttpPost]
+        public IActionResult CleaningFromCarList(int id)
+        {
+            service.UpdateCleaningToDone(id);
+            return RedirectToAction("ListOfAll", "Cars");
         }
 
         [HttpGet]

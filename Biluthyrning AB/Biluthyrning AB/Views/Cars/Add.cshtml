@@ -1,0 +1,28 @@
+﻿@model Biluthyrning_AB.Models.ViewModels.CarsAddVM
+
+@{
+    ViewData["Title"] = "Lägg till ny bil i registret";
+}
+<partial name="_MenuBarCars" />
+
+<form asp-controller="Cars" asp-action="Add" method="post" style="text-align: center">
+    <label asp-for="CarType"></label><br />
+    <select name="CarType">
+        <option value="Small car">Small car</option>
+        <option value="Van">Van</option>
+        <option value="Minibus">Minibus</option>
+    </select>
+    <span asp-validation-for="CarType"> </span>
+    <br />
+    <label asp-for="Registrationnumber"></label><br />
+    <input asp-for="Registrationnumber" style="width: 143px" />
+    <span asp-validation-for="Registrationnumber"></span>
+    <br />
+    <label asp-for="Kilometer"></label><br />
+    <input asp-for="Kilometer" />
+    <span asp-validation-for="Kilometer"></span>
+
+    <br />
+    <input type="submit" value="Lägg till bil" />
+</form>
+

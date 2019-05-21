@@ -15,5 +15,9 @@ namespace Biluthyrning_AB.Models.ViewModels
         public int Kilometer { get; set; }
         public bool AvailableForRent { get; set; }
         public Customers customer { get; set; }
+        public int CleaningId { get; set; }
+        public int ServiceId { get; set; }
+        public int RetireId { get; set; }
+
     }
 }

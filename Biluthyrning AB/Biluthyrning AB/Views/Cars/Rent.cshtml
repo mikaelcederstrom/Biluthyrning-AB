@@ -10,7 +10,8 @@
 
 }
 </style>
-
+<div style="text-align: center">
+    <h2>Fyll i uppgifter för hyrning av bil</h2><br />
     <form asp-controller="Cars" asp-action="Rent" method="post">
 
         @*<label asp-for="ListOfCarTypes"></label><br />
@@ -19,22 +20,21 @@
         <span asp-validation-for="SelectedCarTypeValue"></span>
         <br />*@
         <label asp-for="personNumber"></label><br />
-        <input asp-for="personNumber" style="width: 13%" />
+        <input asp-for="personNumber" style="width: 165px" /><br />
         <span asp-validation-for="personNumber"> </span>
-
         <br />
         <label asp-for="RentalDate"></label><br />
-        <input asp-for="RentalDate" id="rentalDate" />
+        <input asp-for="RentalDate" id="rentalDate" /><br />
         <span asp-validation-for="RentalDate"></span>
         <br />
         <label asp-for="ReturnDate"></label><br />
-        <input asp-for="ReturnDate" id="returnDate" />
+        <input asp-for="ReturnDate" id="returnDate" /><br />
         <span asp-validation-for="ReturnDate"></span>
         <div id="divResult"></div>
 
     </form>
 <button id="GetAvailableCars" onclick="AvailableCarsGet(); Ghost();">List tillgängliga bilar</button>
-
+</div>
 @section scripts
 {
 <script>

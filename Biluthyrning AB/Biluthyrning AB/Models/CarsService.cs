@@ -23,7 +23,6 @@ namespace Biluthyrning_AB.Models
             Cars[] x = GetAllAvailableCarsFromDB();
             var viewModel = new CarsRentVM();
 
-
             viewModel.ListOfCarTypes = new SelectListItem[x.Length];
 
             for (int i = 0; i < x.Length; i++)
@@ -62,6 +61,26 @@ namespace Biluthyrning_AB.Models
                 .ThenBy(c => c.CarType)
                 .ToArray();
         }
+
+        internal bool AddCarToDB(CarsAddVM viewModel)
+        {
+            Cars x = new Cars
+            {
+                CarType = viewModel.CarType,
+                Kilometer = viewModel.Kilometer,
+                AvailableForRent = true                
+            };
+            if (context.Cars.All(c => c.Registrationnumber != viewModel.Registrationnumber))
+                x.Registrationnumber = viewModel.Registrationnumber;
+            else
+                return false;
+           
+
+            context.Cars.Add(x);
+            context.SaveChanges();
+            return true;
+        }
+
         //internal CarsListOfAllVM[] CheckCarsAvailabilityDuringPeriod(RentPeriodData viewModel)
         //{
         //    // 
@@ -151,7 +170,18 @@ namespace Biluthyrning_AB.Models
                         LastName = o.Customer.LastName,
                         PersonNumber = o.Customer.PersonNumber,
                         Id = o.CustomerId
-                    }).FirstOrDefault()
+                    }).FirstOrDefault(),
+                    CleaningId = c.CarCleaning
+                    .Where(k => k.CarId == c.Id && !k.CleaningDone == true)
+                    .Select(k => k.Id).FirstOrDefault(),
+                    ServiceId = c.CarService
+                    .Where(s => s.CarId == c.Id && !s.ServiceDone == true)
+                    .Select(s => s.Id).FirstOrDefault(),
+                    RetireId = c.CarRetire
+                    .Where(r => r.CarId == c.Id)
+                    .Select(r => r.Id).FirstOrDefault(),
+
+
                 })
                 .OrderBy(c => c.AvailableForRent)
                 .ThenBy(c => c.CarType)
