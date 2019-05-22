@@ -5,10 +5,8 @@
 }
 <style>
     .ghost {
-
-  visibility: hidden;
-
-}
+        visibility: hidden;
+    }
 </style>
 <div style="text-align: center">
     <h2>Fyll i uppgifter för hyrning av bil</h2><br />
@@ -33,46 +31,51 @@
         <div id="divResult"></div>
 
     </form>
-<button id="GetAvailableCars" onclick="AvailableCarsGet(); Ghost();">List tillgängliga bilar</button>
+    <button id="GetAvailableCars" @*onclick="AvailableCarsPost(); Ghost();" *@>List tillgängliga bilar</button>
 </div>
 @section scripts
 {
 <script>
-    function AvailableCarsGet() {
-        $("#GetAvailableCars").click(function () {
-            $.ajax({
-                url: "/AvailableCars",
-                type: "Get",
-                success: function (result) {
-                    console.log(result);
-                    $("#divResult").html(result);
-                }
-            });
+    //function AvailableCarsGet() {
+    //    $("#GetAvailableCars").click(function () {
+    //        $.ajax({
+    //            url: "/AvailableCars",
+    //            type: "Get",
+    //            success: function (result) {
+    //                console.log(result);
+    //                $("#divResult").html(result);
+    //            }
+    //        });
 
-        });
-    }
+    //    });
+    //}
     function Ghost() {
         $("#GetAvailableCars").addClass("ghost");
     };
-    </script>
+</script>
 <script>
-    
-        $("#GetAvailableCars").click(function () {
-            var RentalDate = $("#rentalDate").val();
-            var ReturnDate = $("#returnDate").val();
-            console.log(RentalDate);
-            var viewModel = { RentalDate: RentalDate, ReturnDate: ReturnDate };
-            $.ajax({
-                url: "/AvailableCars",
-                type: "Post",
-                data: JSON.stringify(viewModel),
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function (response) {
-                }
-            });
 
+    $("#GetAvailableCars").click(function () {
+        var RentalDate = $("#rentalDate").val();
+        var ReturnDate = $("#returnDate").val();
+        console.log(RentalDate);
+        var viewModel = { RentalDate: RentalDate, ReturnDate: ReturnDate };
+        request = $.ajax({
+            url: "/AvailableCars",
+            type: "Post",           
+            data: JSON.stringify(viewModel),
+            contentType: "application/json; charset=utf-8",
+            //dataType: "json", // Förväntar sig då svaret i json och inte html. 
+            success: function (result) {
+                Ghost();
+                $("#divResult").html(result);
+            }
         });
-    
+  
+
+    });
+
+        
+
 </script>
 }

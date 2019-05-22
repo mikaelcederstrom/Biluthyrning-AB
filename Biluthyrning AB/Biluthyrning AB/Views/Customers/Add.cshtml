@@ -3,22 +3,23 @@
 @{
     ViewData["Title"] = "Lägg till kund";
 }
+        <partial name="_MenuBarCustomers" />
+    <div style="text-align: center">
+        <form asp-controller="Customers" asp-action="Add" method="post">
 
-<partial name="_MenuBarCustomers" />
-<form asp-controller="Customers" asp-action="Add" method="post">
+            <label asp-for="FirstName"></label><br />
+            <input asp-for="FirstName" style="width: 165px" /><br />
+            <span asp-validation-for="FirstName"> </span>
+            <br />
+            <label asp-for="LastName"></label><br />
+            <input asp-for="LastName" style="width: 165px" /><br />
+            <span asp-validation-for="LastName"></span>
+            <br />
+            <label asp-for="PersonNumber"></label><br />
+            <input asp-for="PersonNumber" style="width: 165px" /><br />
+            <span asp-validation-for="PersonNumber"></span>
 
-    <label asp-for="FirstName"></label>
-    <input asp-for="FirstName" />
-    <span asp-validation-for="FirstName"> </span>
-
-    <label asp-for="LastName"></label>
-    <input asp-for="LastName" />
-    <span asp-validation-for="LastName"></span>
-
-    <label asp-for="PersonNumber"></label>
-    <input asp-for="PersonNumber" />
-    <span asp-validation-for="PersonNumber"></span>
-
-    <br />
-    <input type="submit" value="Lägg till kund" />
-</form>
+            <br />
+            <input type="submit" value="Lägg till kund" />
+        </form>
+        </div>

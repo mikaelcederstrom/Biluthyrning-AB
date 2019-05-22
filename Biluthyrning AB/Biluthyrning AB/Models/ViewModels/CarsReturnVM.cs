@@ -15,7 +15,6 @@ namespace Biluthyrning_AB.Models.ViewModels
         [Required(ErrorMessage = "Skriv in mätarställningen")]
         [Range(0.0, 3000.0)]
         public int Kilometer { get; set; }
-
         
         public int KilometerBeforeRental { get; set; }
 

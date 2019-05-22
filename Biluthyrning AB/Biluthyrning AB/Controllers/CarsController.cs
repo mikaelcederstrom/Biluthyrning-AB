@@ -30,9 +30,21 @@ namespace Biluthyrning_AB.Controllers
         [Route("~/AvailableCars")]
         public IActionResult AvailableCars([FromBody]RentPeriodData viewModel)
         {
-            return Json(new { success = true });
-
+            CarsListOfAllVM[] x = service.CheckCarsAvailabilityDuringPeriod(viewModel);
             //return RedirectToAction(nameof(AvailableCars));
+            //return RedirectToAction("AvailableCars", "Cars", x);
+            //return RedirectToAction(nameof(AvailableCars), new { CarsListOfAllVM = x});
+            return AvailableCars(x);
+
+
+        }
+        [HttpGet]
+        [Route("~/AvailableCars")]
+        public IActionResult AvailableCars(CarsListOfAllVM[] x)
+        {
+
+            //CarsListOfAllVM[] x = service.CheckCarsAvailabilityDuringPeriod(viewModel);
+            return PartialView("_AvailableCars", x);
 
         }
         [Route("~/cars/add")]
@@ -49,8 +61,6 @@ namespace Biluthyrning_AB.Controllers
             if (!ModelState.IsValid)
                 return View(viewModel);
 
-
-
             if (!service.AddCarToDB(viewModel))            
                 return View(viewModel);
             // Ändra till att returnera en partiellvy med att regnr redan är inlagt
@@ -58,22 +68,13 @@ namespace Biluthyrning_AB.Controllers
             return RedirectToAction("ListOfAll", "Cars");
 
         }
-        [HttpGet]
-        [Route("~/AvailableCars")]
-        public IActionResult AvailableCars()
-        {
-
-            //CarsListOfAllVM[] x = service.CheckCarsAvailabilityDuringPeriod(viewModel);
-            CarsListOfAllVM[] x = service.CheckCarsAvailabilityDuringPeriod();
-            return PartialView("_AvailableCars", x);
-
-        }
+    
 
         [HttpGet]
         [Route("~/rent/")]
         public IActionResult Rent()
         {
-            return View(service.DropDownListForCarType());
+            return View(service.DropDownListForCarType()); // Används ej längre
         }
 
         [HttpPost]

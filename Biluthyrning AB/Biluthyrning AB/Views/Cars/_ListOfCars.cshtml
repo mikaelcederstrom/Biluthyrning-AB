@@ -53,7 +53,11 @@
                 <div class="col-sm">
                     @if (@Model[i].CleaningId != 0)
                     {
-                        <span>Ja, (<a asp-controller="Cars" asp-action="Cleaning" asp-route-id="@Model[i].CleaningId">Tvätta</a>)</span>
+                    <span>
+                        Ja, (<form asp-controller="Cars" asp-action="CleaningFromCarList" asp-route-id="@Model[i].CleaningId" method="post">
+                            <input type="submit" value="Tvätta" />
+                        </form>)
+                    </span>
                     }
                     @if (@Model[i].CleaningId == 0)
                     {
@@ -63,7 +67,11 @@
                 <div class="col-sm">
                     @if (@Model[i].ServiceId != 0)
                     {
-                        <span>Ja, (<a asp-controller="Cars" asp-action="Service" asp-route-id="@Model[i].ServiceId">Serva</a>)</span>
+                    <span>
+                        Ja, (<form asp-controller="Cars" asp-action="ServiceFromCarList" asp-route-id="@Model[i].ServiceId" method="post">
+                            <input type="submit" value="Tvätta" />
+                        </form>)
+                    </span>
                     }
                     @if (@Model[i].ServiceId == 0)
                     {

@@ -35,10 +35,15 @@ namespace Biluthyrning_AB.Models
             }
             return viewModel;
         }
-        internal CarsListOfAllVM[] CheckCarsAvailabilityDuringPeriod()
+        internal CarsListOfAllVM[] CheckCarsAvailabilityDuringPeriod(RentPeriodData viewModel)
         {
-            return context.Cars
-                .Where(c => (c.CarCleaning.All(k => k.CleaningDone == true) || c.CarCleaning.Count == 0) && (!c.CarRetire.Any() || c.CarRetire.Count == 0) && (c.CarService.All(s => !s.ServiceDone == false) || c.CarService.Count == 0))
+            //(!(MyRentalDate >= DBRentalDate && MyRentalDate <= DBReturnDate) || !(MyReturnDate >= DBRentalDate && MyReturnDate <= DBReturnDate) || CarReturn);
+
+            CarsListOfAllVM[] x = context.Cars
+                .Where(c => (c.CarCleaning.All(k => k.CleaningDone == true) || c.CarCleaning.Count == 0) &&
+                                                    (!c.CarRetire.Any() || c.CarRetire.Count == 0) &&
+                                                    (c.CarService.All(s => !s.ServiceDone == false) || c.CarService.Count == 0)
+                                                    && (c.Orders.All(o => (!((viewModel.RentalDate >= o.RentalDate && viewModel.RentalDate <= o.ReturnDate) || (viewModel.ReturnDate >= o.RentalDate && viewModel.ReturnDate <= o.ReturnDate )) || o.CarReturned == true || c.Orders.Count == 0))))
                 .Select(c => new CarsListOfAllVM
                 {
 
@@ -49,17 +54,18 @@ namespace Biluthyrning_AB.Models
                     Registrationnumber = c.Registrationnumber,
                     customer = c.Orders
                      .Where(o => o.CarId == c.Id)
-                    .Select(o => new Customers
-                    {
-                        FirstName = o.Customer.FirstName,
-                        LastName = o.Customer.LastName,
-                        PersonNumber = o.Customer.PersonNumber,
-                        Id = o.CustomerId
-                    }).FirstOrDefault()
+                     .Select(o => new Customers
+                     {
+                         FirstName = o.Customer.FirstName,
+                         LastName = o.Customer.LastName,
+                         PersonNumber = o.Customer.PersonNumber,
+                         Id = o.CustomerId
+                     }).FirstOrDefault()
                 })
                 .OrderBy(c => c.AvailableForRent)
                 .ThenBy(c => c.CarType)
                 .ToArray();
+            return x;
         }
 
         internal bool AddCarToDB(CarsAddVM viewModel)
@@ -68,42 +74,36 @@ namespace Biluthyrning_AB.Models
             {
                 CarType = viewModel.CarType,
                 Kilometer = viewModel.Kilometer,
-                AvailableForRent = true                
+                AvailableForRent = true
             };
             if (context.Cars.All(c => c.Registrationnumber != viewModel.Registrationnumber))
                 x.Registrationnumber = viewModel.Registrationnumber;
             else
                 return false;
-           
+
 
             context.Cars.Add(x);
             context.SaveChanges();
             return true;
         }
 
-        //internal CarsListOfAllVM[] CheckCarsAvailabilityDuringPeriod(RentPeriodData viewModel)
-        //{
-        //    // 
-        //    CarsListOfAllVM[] x = context.Orders
-        //        .Where(o => !(o.Car.Orders.Any()) || (!(o.RentalDate.Ticks > viewModel.RentalDate.Ticks) && !(o.ReturnDate.Ticks < viewModel.ReturnDate.Ticks) && o.CarReturned == (false)))
-        //        .Select(o => new CarsListOfAllVM
-        //        {
-        //            AvailableForRent = o.Car.AvailableForRent,
-        //            CarType = o.Car.CarType,
-        //            Kilometer = o.Car.Kilometer,
-        //            Id = o.Car.Id,
-        //            Registrationnumber = o.Car.Registrationnumber
+        internal CarsListOfAllVM[] CheckCarsAvailabilityDuringPeriodAAAAA(RentPeriodData viewModel)
+        {
+            // 
+            CarsListOfAllVM[] x = context.Orders
+                .Where(o => !(o.Car.Orders.Any()) || (!(o.RentalDate.Ticks > viewModel.RentalDate.Ticks) && !(o.ReturnDate.Ticks < viewModel.ReturnDate.Ticks) && o.CarReturned == (false)))
+                .Select(o => new CarsListOfAllVM
+                {
+                    AvailableForRent = o.Car.AvailableForRent,
+                    CarType = o.Car.CarType,
+                    Kilometer = o.Car.Kilometer,
+                    Id = o.Car.Id,
+                    Registrationnumber = o.Car.Registrationnumber
 
-        //        }).ToArray();
+                }).ToArray();
 
-        //    //CarsListOfAllVM[] y = context.Cars
-        //    //    .Where(c => !c.Orders.Any()) || (context.Orders.Where(o => !(o.RentalDate.Ticks > viewModel.RentalDate.Ticks) && !(o.ReturnDate.Ticks < viewModel.ReturnDate.Ticks) && o.CarReturned == (false))
-        //    //    .Select(c => new CarsListOfAllVM{
-        //    //        AvailableForRent = c.)
-
-
-        //    return x;
-        //}
+            return x;
+        }
 
         internal CarsReceiptVM CreateReceipt(int orderID, CarsRentVM viewModel)
         {
