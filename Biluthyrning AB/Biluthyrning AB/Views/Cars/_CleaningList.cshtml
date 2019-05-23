@@ -16,11 +16,8 @@
         </div>
     </div>
 
-    @for (int i = 0; i < Model.Length; i++)
-    {
-        if (i % 2 == 0)
-        {
-            <div class="row" style="background-color: bisque">
+    @for (int i = 0; i < Model.Length; i++)    {
+            <div class="row" style="background-color: @(i % 2 == 0 ? "bisque" : "white")">
                 <div class="col-sm">
                     @Model[i].CarId
                 </div>
@@ -42,34 +39,6 @@
                         </form>
                     }
                 </div>
-            </div>
-        }
-
-        if (i % 2 == 1)
-        {
-            <div class="row" style="background-color: bisque">
-                <div class="col-sm">
-                    @Model[i].CarId
-                </div>
-                <div class="col-sm">
-                    @Model[i].FlaggedForCleaningDate
-                </div>
-                <div class="col-sm">
-                    @Model[i].CleaningDoneDate
-                </div>
-                <div class="col-sm">
-                    @if (@Model[i].CleaningDone == true)
-                    {
-                        <span>Ja</span>
-                    }
-                    @if (@Model[i].CleaningDone == false)
-                    {
-                        <form asp-controller="Cars" asp-action="Cleaning" asp-route-id="@Model[i].CleaningId" method="post">
-                            <input type="submit" value="Tvätta" />
-                        </form>
-                    }
-                </div>
-            </div>
-        }
+            </div>        
     }
 </div>

@@ -11,7 +11,6 @@ namespace Biluthyrning_AB.Models
 {
     public class CarsService
     {
-
         public CarsService(BiluthyrningContext context)
         {
             this.context = context;
@@ -43,11 +42,12 @@ namespace Biluthyrning_AB.Models
                 .Where(c => (c.CarCleaning.All(k => k.CleaningDone == true) || c.CarCleaning.Count == 0) &&
                                                     (!c.CarRetire.Any() || c.CarRetire.Count == 0) &&
                                                     (c.CarService.All(s => !s.ServiceDone == false) || c.CarService.Count == 0)
-                                                    && (c.Orders.All(o => (!((viewModel.RentalDate >= o.RentalDate && viewModel.RentalDate <= o.ReturnDate) || (viewModel.ReturnDate >= o.RentalDate && viewModel.ReturnDate <= o.ReturnDate )) || o.CarReturned == true || c.Orders.Count == 0))))
+                                                    && (c.Orders.All(o => (!((viewModel.RentalDate >= o.RentalDate && viewModel.RentalDate <= o.ReturnDate) || (viewModel.ReturnDate >= o.RentalDate && viewModel.ReturnDate <= o.ReturnDate)) || o.CarReturned == true || c.Orders.Count == 0))))
                 .Select(c => new CarsListOfAllVM
                 {
 
-                    AvailableForRent = c.AvailableForRent,
+                    //AvailableForRent = c.AvailableForRent,
+                    AvailableForRent = true,
                     CarType = c.CarType,
                     Id = c.Id,
                     Kilometer = c.Kilometer,
@@ -68,6 +68,79 @@ namespace Biluthyrning_AB.Models
             return x;
         }
 
+        internal CarsDetailsVM GetCarById(int id)
+        {
+            return context.Cars
+                .Where(c => c.Id == id)
+                .Select(c => new CarsDetailsVM
+                {
+                    AvailableForRent = c.AvailableForRent,
+                    CarType = c.CarType,
+                    Kilometer = c.Kilometer,
+                    Registrationnumber = c.Registrationnumber,
+                    Events = c.Events.Select(e => new CarsDetailsVMEvents
+                    {
+                        EventType = e.EventType,
+                        BookingId = e.BookingId,
+                        CustomerFirstName = e.Customer.FirstName,
+                        CustomerLastName = e.Customer.LastName,
+                        CustomerId = e.CustomerId,
+                        Date = e.Date
+                    }).OrderByDescending(e => e.Date)
+                    .ToArray()
+
+                }).FirstOrDefault();
+        }
+
+        internal void RemoveCars(CarsRemoveVM[] viewModel)
+        {
+            foreach (var item in viewModel)
+            {
+                if (item.Remove)
+                {
+                    CarRetire x = new CarRetire
+                    {
+                        CarId = item.CarId,
+                        FlaggedForRetiringDate = DateTime.Now,
+                        Retired = true,
+                        RetiredDate = DateTime.Now
+                    };
+                    context.CarRetire.Add(x);
+                    Events y = AddEventToDB("Bil borttagen", null, x.CarId, null);
+                    context.Events.Add(y);
+                }
+            }
+            context.SaveChanges();
+        }
+
+        private Events AddEventToDB(string eventType, int? customerId, int? carId, int? orderId)
+        {
+            Events x = new Events();
+            x.EventType = eventType;
+            x.CarId = carId;
+            x.CustomerId = customerId;
+            x.BookingId = orderId;
+            x.Date = DateTime.Now;
+            return x;
+        }
+
+        internal CarsRemoveVM[] ListOfAllCarsRemove()
+        {
+            CarsRemoveVM[] x = context.Cars
+                .Where(c => c.CarRetire.Count == 0)
+                .Select(c => new CarsRemoveVM
+                {
+                    CarId = c.Id,
+                    CarType = c.CarType,
+                    Kilometer = c.Kilometer,
+                    Registrationnumber = c.Registrationnumber,
+                    Remove = false
+                })
+                .ToArray();
+
+            return x;
+        }
+
         internal bool AddCarToDB(CarsAddVM viewModel)
         {
             Cars x = new Cars
@@ -83,6 +156,9 @@ namespace Biluthyrning_AB.Models
 
 
             context.Cars.Add(x);
+            context.SaveChanges();
+            Events y = AddEventToDB("Bil tillagd", null, x.Id, null);
+            context.Events.Add(y);
             context.SaveChanges();
             return true;
         }
@@ -146,6 +222,9 @@ namespace Biluthyrning_AB.Models
             };
             context.Orders.Add(order);
             context.SaveChanges();
+            Events y = AddEventToDB("Bil bokad", order.CustomerId, order.CarId, order.Id);
+            context.Events.Add(y);
+            context.SaveChanges();
             //UpdateAvailability(viewModel.SelectedCarTypeValue);
             UpdateAvailability(viewModel.CarId);
 
@@ -183,7 +262,8 @@ namespace Biluthyrning_AB.Models
 
 
                 })
-                .OrderBy(c => c.AvailableForRent)
+                .OrderBy(c => c.RetireId)
+                .ThenBy(c => c.AvailableForRent)
                 .ThenBy(c => c.CarType)
                 .ToArray();
         }
@@ -201,6 +281,8 @@ namespace Biluthyrning_AB.Models
                     FlaggedForCleaningDate = c.FlaggedForCleaningDate
                 }).SingleOrDefault();
             context.Update(cc);
+            Events y = AddEventToDB("Bil tvättad", null, cc.CarId, null);
+            context.Events.Add(y);
             context.SaveChanges();
         }
 
@@ -253,6 +335,8 @@ namespace Biluthyrning_AB.Models
 
           }).SingleOrDefault();
             context.Update(cs);
+            Events y = AddEventToDB("Service av bil", null, cs.CarId, null);
+            context.Events.Add(y);
             context.SaveChanges();
         }
 
@@ -283,6 +367,8 @@ namespace Biluthyrning_AB.Models
             order.CarReturned = true;
             order.KilometerAfterRental = viewModel.Kilometer;
             context.Orders.Update(order);
+            Events y = AddEventToDB("Bil återlämnad", order.CustomerId, order.CarId, order.Id);
+            context.Events.Add(y);
             context.SaveChanges();
 
             UpdateCarKMByOrderID(viewModel.OrderNumber);
@@ -407,6 +493,8 @@ namespace Biluthyrning_AB.Models
                 Retired = false
             };
             context.Add(cr);
+            Events y = AddEventToDB("Bil borttagen", null, cr.CarId, null);
+            context.Events.Add(y);
             context.SaveChanges();
         }
 

@@ -1,0 +1,59 @@
+﻿@model Biluthyrning_AB.Models.ViewModels.CarsDetailsVM
+@{
+    ViewData["Title"] = "Details";
+}
+<partial name="_MenuBarCars" />
+
+@Model.Kilometer
+
+@Model.Registrationnumber,
+
+@Model.CarType,
+@Model.AvailableForRent
+
+
+<div class="container">
+    <div class="row" style="background-color: lightgray">
+        <div class="col-sm">
+            Typ av event
+        </div>
+        <div class="col-sm">
+            Utfört av
+        </div>
+        <div class="col-sm">
+            Order
+        </div>
+        <div class="col-sm">
+            Datum
+        </div>
+    </div>
+
+    @for (int i = 0; i < Model.Events.Length; i++)
+    {
+        <div class="row" style="background-color: @(i % 2 == 0 ? "bisque" : "white")">
+            <div class="col-sm">
+                @Model.Events[i].EventType
+            </div>
+            <div class="col-sm">
+                @if (Model.Events[i].CustomerId != null)
+                {
+                    <span>@Model.Events[i].CustomerFirstName @Model.Events[i].CustomerLastName</span>
+                }
+                @if (Model.Events[i].CustomerId == null)
+                {
+                    <span>Bilfirman</span>
+                }
+            </div>
+            <div class="col-sm">
+                @if (Model.Events[i].BookingId != null)
+                {
+                    <span>@Model.Events[i].BookingId</span>
+                }            
+            </div>
+            <div class="col-sm">
+                @Model.Events[i].Date
+            </div>
+        </div>
+    }
+</div>
+

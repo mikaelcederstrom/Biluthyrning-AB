@@ -1,0 +1,54 @@
+﻿@model Biluthyrning_AB.Models.ViewModels.EventsIndexVM[]
+
+@{
+    ViewData["Title"] = "EventIndex";
+}
+
+<div class="container">
+    <div class="row" style="background-color: lightgray">
+        <div class="col-sm">
+            Typ av event
+        </div>
+        <div class="col-sm">
+            Utfört av
+        </div>
+        <div class="col-sm">
+            Utfört på (Order / Bil)
+        </div>
+        <div class="col-sm">
+            Datum
+        </div>
+    </div>
+
+    @for (int i = 0; i < Model.Length; i++)
+    {
+        <div class="row" style="background-color: @(i % 2 == 0 ? "bisque" : "white")">
+            <div class="col-sm">
+                @Model[i].EventType
+            </div>
+            <div class="col-sm">
+                @if (Model[i].CustomerId != null)
+                {
+                <span>@Model[i].CustomerFirstName @Model[i].CustomerLastName</span>
+                }
+                @if (Model[i].CustomerId == null)
+                {
+                    <span>Bilfirman</span>
+                }
+            </div>
+            <div class="col-sm">
+                @if (Model[i].BookingId != null)
+                {
+                    <span>@Model[i].BookingId / @Model[i].CarRegNr</span>
+                }
+                @if (Model[i].BookingId == null)
+                {
+                    @Model[i].CarRegNr
+                }
+            </div>
+            <div class="col-sm">
+                @Model[i].Date
+            </div>
+        </div>
+    }
+</div>

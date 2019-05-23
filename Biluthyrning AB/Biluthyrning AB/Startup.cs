@@ -27,7 +27,8 @@ namespace Biluthyrning_AB
 
             services.AddTransient<CarsService>();
             services.AddTransient<CustomersService>();
-            
+            services.AddTransient<EventsService>();
+
             services.AddMvc();
         }
 

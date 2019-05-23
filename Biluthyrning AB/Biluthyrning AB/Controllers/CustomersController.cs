@@ -44,7 +44,6 @@ namespace Biluthyrning_AB.Controllers
                 return View(viewModel);
             }
             return RedirectToAction("Home", "Cars");
-
         }
 
         [Route("~/listOfCustomers")]

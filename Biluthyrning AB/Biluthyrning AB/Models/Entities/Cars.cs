@@ -10,6 +10,7 @@ namespace Biluthyrning_AB.Models.Entities
             CarCleaning = new HashSet<CarCleaning>();
             CarRetire = new HashSet<CarRetire>();
             CarService = new HashSet<CarService>();
+            Events = new HashSet<Events>();
             Orders = new HashSet<Orders>();
         }
 
@@ -22,6 +23,7 @@ namespace Biluthyrning_AB.Models.Entities
         public virtual ICollection<CarCleaning> CarCleaning { get; set; }
         public virtual ICollection<CarRetire> CarRetire { get; set; }
         public virtual ICollection<CarService> CarService { get; set; }
+        public virtual ICollection<Events> Events { get; set; }
         public virtual ICollection<Orders> Orders { get; set; }
     }
 }

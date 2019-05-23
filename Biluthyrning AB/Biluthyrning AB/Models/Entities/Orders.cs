@@ -5,6 +5,11 @@ namespace Biluthyrning_AB.Models.Entities
 {
     public partial class Orders
     {
+        public Orders()
+        {
+            Events = new HashSet<Events>();
+        }
+
         public int Id { get; set; }
         public int CarId { get; set; }
         public int CustomerId { get; set; }
@@ -16,5 +21,6 @@ namespace Biluthyrning_AB.Models.Entities
 
         public virtual Cars Car { get; set; }
         public virtual Customers Customer { get; set; }
+        public virtual ICollection<Events> Events { get; set; }
     }
 }

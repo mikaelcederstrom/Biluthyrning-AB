@@ -68,8 +68,28 @@ namespace Biluthyrning_AB.Controllers
             return RedirectToAction("ListOfAll", "Cars");
 
         }
-    
+        [Route("~/cars/remove")]
+        [HttpGet]
+        public IActionResult Remove()
+        {
+            CarsRemoveVM[] x = service.ListOfAllCarsRemove();
+            return View(x);
+        }
 
+        [Route("~/cars/remove")]
+        [HttpPost]
+        public IActionResult Remove(CarsRemoveVM[] viewModel)
+        {
+            service.RemoveCars(viewModel);
+            return RedirectToAction("Remove", "Cars");
+
+        }
+        [Route("~/cars/details/{id}")]
+        [HttpGet]
+        public IActionResult Details(int id)
+        {
+            return View(service.GetCarById(id));
+        }
         [HttpGet]
         [Route("~/rent/")]
         public IActionResult Rent()

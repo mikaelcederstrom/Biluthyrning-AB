@@ -20,6 +20,7 @@ namespace Biluthyrning_AB.Models.Entities
         public virtual DbSet<CarService> CarService { get; set; }
         public virtual DbSet<Cars> Cars { get; set; }
         public virtual DbSet<Customers> Customers { get; set; }
+        public virtual DbSet<Events> Events { get; set; }
         public virtual DbSet<Orders> Orders { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -33,7 +34,7 @@ namespace Biluthyrning_AB.Models.Entities
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasAnnotation("ProductVersion", "2.2.4-servicing-10062");
+            modelBuilder.HasAnnotation("ProductVersion", "2.2.3-servicing-35854");
 
             modelBuilder.Entity<CarCleaning>(entity =>
             {
@@ -45,7 +46,7 @@ namespace Biluthyrning_AB.Models.Entities
                     .WithMany(p => p.CarCleaning)
                     .HasForeignKey(d => d.CarId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__CarCleani__CarId__7F2BE32F");
+                    .HasConstraintName("FK__CarCleani__CarId__267ABA7A");
             });
 
             modelBuilder.Entity<CarRetire>(entity =>
@@ -58,7 +59,7 @@ namespace Biluthyrning_AB.Models.Entities
                     .WithMany(p => p.CarRetire)
                     .HasForeignKey(d => d.CarId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__CarRetire__CarId__797309D9");
+                    .HasConstraintName("FK__CarRetire__CarId__2C3393D0");
             });
 
             modelBuilder.Entity<CarService>(entity =>
@@ -71,13 +72,13 @@ namespace Biluthyrning_AB.Models.Entities
                     .WithMany(p => p.CarService)
                     .HasForeignKey(d => d.CarId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__CarServic__CarId__7C4F7684");
+                    .HasConstraintName("FK__CarServic__CarId__29572725");
             });
 
             modelBuilder.Entity<Cars>(entity =>
             {
                 entity.HasIndex(e => e.Registrationnumber)
-                    .HasName("UQ__Cars__B7F512B974C2FB03")
+                    .HasName("UQ__Cars__B7F512B9811C4495")
                     .IsUnique();
 
                 entity.Property(e => e.CarType)
@@ -92,7 +93,7 @@ namespace Biluthyrning_AB.Models.Entities
             modelBuilder.Entity<Customers>(entity =>
             {
                 entity.HasIndex(e => e.PersonNumber)
-                    .HasName("UQ__Customer__85D6AE8FF968E1B5")
+                    .HasName("UQ__Customer__85D6AE8F96A86E00")
                     .IsUnique();
 
                 entity.Property(e => e.FirstName).IsRequired();
@@ -102,6 +103,39 @@ namespace Biluthyrning_AB.Models.Entities
                 entity.Property(e => e.PersonNumber)
                     .IsRequired()
                     .HasMaxLength(11);
+            });
+
+            modelBuilder.Entity<Events>(entity =>
+            {
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.BookingId).HasColumnName("BookingID");
+
+                entity.Property(e => e.CarId).HasColumnName("CarID");
+
+                entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+
+                entity.Property(e => e.Date).HasColumnType("datetime");
+
+                entity.Property(e => e.EventType)
+                    .IsRequired()
+                    .HasMaxLength(32)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.Booking)
+                    .WithMany(p => p.Events)
+                    .HasForeignKey(d => d.BookingId)
+                    .HasConstraintName("FK__Events__BookingI__398D8EEE");
+
+                entity.HasOne(d => d.Car)
+                    .WithMany(p => p.Events)
+                    .HasForeignKey(d => d.CarId)
+                    .HasConstraintName("FK__Events__CarID__37A5467C");
+
+                entity.HasOne(d => d.Customer)
+                    .WithMany(p => p.Events)
+                    .HasForeignKey(d => d.CustomerId)
+                    .HasConstraintName("FK__Events__Customer__38996AB5");
             });
 
             modelBuilder.Entity<Orders>(entity =>
@@ -118,13 +152,13 @@ namespace Biluthyrning_AB.Models.Entities
                     .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.CarId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Orders__CarID__160F4887");
+                    .HasConstraintName("FK__Orders__CarID__31EC6D26");
 
                 entity.HasOne(d => d.Customer)
                     .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.CustomerId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Orders__Customer__17036CC0");
+                    .HasConstraintName("FK__Orders__Customer__32E0915F");
             });
         }
     }

@@ -19,10 +19,7 @@
     </div>
     @for (int i = 0; i < Model.Length; i++)
     {
-        if (i % 2 == 0)
-        {
-            <div class="row" style="background-color: bisque">
-
+            <div class="row" style="background-color: @(i % 2 == 0 ? "bisque" : "white")">
                 <div class="col-sm">
                     <a asp-controller="Customers" asp-action="Details" asp-route-id="@Model[i].ID"> @Model[i].PersonNumber</a>
                 </div>
@@ -42,37 +39,7 @@
                         <span>Nej</span>
                     }
                 </div>
-
-            </div>
-        }
-
-        if (i % 2 == 1)
-        {
-            <div class="row" style="background-color: white">
-                
-                    <div class="col-sm">
-                        <a asp-controller="Customers" asp-action="Details" asp-route-id="@Model[i].ID"> @Model[i].PersonNumber</a>
-                    </div>
-                    <div class="col-sm">
-                        @Model[i].LastName
-                    </div>
-                    <div class="col-sm">
-                        @Model[i].FirstName
-                    </div>
-                    <div class="col-sm">
-                        @if (@Model[i].ActiveOrder == true)
-                        {
-                            <span>Ja</span>
-                        }
-                        @if (@Model[i].ActiveOrder == false)
-                        {
-                            <span>Nej</span>
-                        }
-                    </div>
-                
-            </div>
-        }
-
+            </div>      
     }
 
 </div>

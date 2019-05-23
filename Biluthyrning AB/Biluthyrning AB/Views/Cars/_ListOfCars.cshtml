@@ -27,15 +27,13 @@
 
     @for (int i = 0; i < Model.Length; i++)
     {
-        if (i % 2 == 0)
-        {
-            <div class="row" style="background-color: bisque">
+            <div class="row" style="background-color: @(i % 2 == 0 ? "bisque" : "white")">
 
                 <div class="col-sm">
                     @Model[i].CarType
                 </div>
                 <div class="col-sm">
-                    @Model[i].Registrationnumber
+                    <a asp-controller="Cars" asp-action="Details" asp-route-id="@Model[i].Id">@Model[i].Registrationnumber</a> 
                 </div>
                 <div class="col-sm">
                     @Model[i].Kilometer
@@ -88,70 +86,6 @@
                         <span>Nej</span>
                     }
                 </div>
-            </div>
-        }
-
-        if (i % 2 == 1)
-        {
-            <div class="row" style="background-color: white">
-                <div class="col-sm">
-                    @Model[i].CarType
-                </div>
-                <div class="col-sm">
-                    @Model[i].Registrationnumber
-                </div>
-                <div class="col-sm">
-                    @Model[i].Kilometer
-                </div>
-                <div class="col-sm">
-                    @if (@Model[i].AvailableForRent == false)
-                    {
-                        <span>Ja, till @Model[i].customer.FirstName @Model[i].customer.LastName (<a asp-controller="Customers" asp-action="Details" asp-route-id="@Model[i].customer.Id">@Model[i].customer.PersonNumber</a>)</span>
-                    }
-                    @if (@Model[i].AvailableForRent == true)
-                    {
-                        <span>Nej</span>
-                    }
-                </div>
-                <div class="col-sm">
-                    @if (@Model[i].CleaningId != 0)
-                    {
-                        <span>
-                            Ja, (<form asp-controller="Cars" asp-action="CleaningFromCarList" asp-route-id="@Model[i].CleaningId" method="post">
-                                <input type="submit" value="Tvätta" />
-                            </form>)
-                        </span>
-                    }
-                    @if (@Model[i].CleaningId == 0)
-                    {
-                        <span>Nej</span>
-                    }
-                </div>
-                <div class="col-sm">
-                    @if (@Model[i].ServiceId != 0)
-                    {
-                    <span>
-                        Ja, (<form asp-controller="Cars" asp-action="ServiceFromCarList" asp-route-id="@Model[i].ServiceId" method="post">
-                            <input type="submit" value="Tvätta" />
-                        </form>)
-                    </span>
-                    }
-                    @if (@Model[i].ServiceId == 0)
-                    {
-                        <span>Nej</span>
-                    }
-                </div>
-                <div class="col-sm">
-                    @if (@Model[i].RetireId != 0)
-                    {
-                        <span>Ja@*, till @Model[i].customer.FirstName @Model[i].customer.LastName (<a asp-controller="Customers" asp-action="Details" asp-route-id="@Model[i].customer.Id">@Model[i].customer.PersonNumber</a>)*@</span>
-                    }
-                    @if (@Model[i].RetireId == 0)
-                    {
-                        <span>Nej</span>
-                    }
-                </div>
-            </div>
-        }
+            </div>   
     }
 </div>

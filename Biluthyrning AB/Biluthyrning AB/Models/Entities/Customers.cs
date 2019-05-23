@@ -7,6 +7,7 @@ namespace Biluthyrning_AB.Models.Entities
     {
         public Customers()
         {
+            Events = new HashSet<Events>();
             Orders = new HashSet<Orders>();
         }
 
@@ -15,6 +16,7 @@ namespace Biluthyrning_AB.Models.Entities
         public string LastName { get; set; }
         public string PersonNumber { get; set; }
 
+        public virtual ICollection<Events> Events { get; set; }
         public virtual ICollection<Orders> Orders { get; set; }
     }
 }

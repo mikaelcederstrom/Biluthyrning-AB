@@ -1,0 +1,82 @@
+﻿@model Biluthyrning_AB.Models.ViewModels.CarsRemoveVM[]
+
+@{
+    ViewData["Title"] = "Remove";
+}
+<partial name="_MenuBarCars" />
+<div style="text-align: center">
+    <h2>Ta bort valda bilar</h2>
+</div>
+<form asp-controller="Cars" asp-action="Remove" method="post">
+    <div class="container">
+
+        <div class="row" style="background-color: lightgray">
+            <div class="col-sm">
+                Biltyp
+            </div>
+            <div class="col-sm">
+                Regnr
+            </div>
+            <div class="col-sm">
+                Mätarställning (Km)
+            </div>
+            <div class="col-sm">
+                Ta bort?
+            </div>
+        </div>
+
+        @for (int i = 0; i < Model.Length; i++)
+        {
+            //if (i % 2 == 0)
+            //{
+                <div class="row" style="background-color: @(i % 2 == 0 ? "bisque" : "white")">
+
+                    <div class="col-sm">
+                        @Model[i].CarType
+                    </div>
+                    <div class="col-sm">
+                        @Model[i].Registrationnumber
+                    </div>
+                    <div class="col-sm">
+                        @Model[i].Kilometer
+                    </div>
+
+                    <div class="col-sm">
+                        <input name="[@i].CarType" value="@Model[i].CarType" type="hidden" />
+                        <input name="[@i].Registrationnumber" value="@Model[i].Registrationnumber" type="hidden" />
+                        <input name="[@i].Kilometer" value="@Model[i].Kilometer" type="hidden" />
+                        <input name="[@i].CarId" value="@Model[i].CarId" type="hidden" />
+                        <input type="checkbox" name="[@i].Remove" value="true"><input name="[@i].Remove" type="hidden" value="false" />
+                    </div>
+                </div>
+            //}
+
+            @*if (i % 2 == 1)
+            {
+                <div class="row" style="background-color: white">
+                    <div class="col-sm">
+                        @Model[i].CarType
+                    </div>
+                    <div class="col-sm">
+                        @Model[i].Registrationnumber
+                    </div>
+                    <div class="col-sm">
+                        @Model[i].Kilometer
+                    </div>
+
+                    <div class="col-sm">
+                        <input name="[@i].CarType" value="@Model[i].CarType" type="hidden" />
+                        <input name="[@i].Registrationnumber" value="@Model[i].Registrationnumber" type="hidden" />
+                        <input name="[@i].Kilometer" value="@Model[i].Kilometer" type="hidden" />
+                        <input name="[@i].CarId" value="@Model[i].CarId" type="hidden" />
+
+                        <input type="checkbox" name="[@i].Remove" value="true"><input name="[@i].Remove" type="hidden" value="false" />
+                    </div>
+                </div>
+            }*@
+        }
+    </div>
+    <div style="text-align:center">
+        <input type="submit" value="Ta bort valda bilar" />
+    </div>
+</form>
