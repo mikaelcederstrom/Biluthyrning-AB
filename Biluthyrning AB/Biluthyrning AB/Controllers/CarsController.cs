@@ -31,12 +31,7 @@ namespace Biluthyrning_AB.Controllers
         public IActionResult AvailableCars([FromBody]RentPeriodData viewModel)
         {
             CarsListOfAllVM[] x = service.CheckCarsAvailabilityDuringPeriod(viewModel);
-            //return RedirectToAction(nameof(AvailableCars));
-            //return RedirectToAction("AvailableCars", "Cars", x);
-            //return RedirectToAction(nameof(AvailableCars), new { CarsListOfAllVM = x});
             return AvailableCars(x);
-
-
         }
         [HttpGet]
         [Route("~/AvailableCars")]
@@ -101,12 +96,6 @@ namespace Biluthyrning_AB.Controllers
         [Route("~/rent")]
         public IActionResult Rent(CarsRentVM viewModel)
         {
-            //CarsRentVM z = service.DropDownListForCarType();
-            //for (int i = 0; i < z.ListOfCarTypes.Length; i++)
-            //{
-            //    viewModel.ListOfCarTypes[i] = z.ListOfCarTypes[i];
-            //}
-
             if (!ModelState.IsValid)
                 return View(viewModel);
 
@@ -126,7 +115,6 @@ namespace Biluthyrning_AB.Controllers
         public IActionResult Return(CarsReturnVM viewModel)
         {
             viewModel.KilometerBeforeRental = service.GetKmFromOrderID(viewModel.OrderNumber);
-
 
             if (viewModel.Kilometer < viewModel.KilometerBeforeRental)
                 return Content("Bilen kan inte lämnas tillbaka med en mätarställning som är lägre än vid hyrning"); // Return partialview, med texten 
@@ -157,14 +145,12 @@ namespace Biluthyrning_AB.Controllers
         {
             CarsListOfAllVM[] x = service.GetAllCarsFromDB();
             return View(x);
-
         }
 
         [HttpGet]
         [Route("~/service")]
         public IActionResult Service()
         {
-
             return View(service.GetServiceListFromDB());
         }
 
@@ -208,7 +194,6 @@ namespace Biluthyrning_AB.Controllers
         [Route("~/maintenance")]
         public IActionResult Maintenance()
         {
-
             return View();
         }
     }

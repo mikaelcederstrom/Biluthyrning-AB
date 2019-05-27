@@ -20,7 +20,7 @@ namespace Biluthyrning_AB.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            EventsIndexVM[] x = service.GetAllEventFromDB(); 
+            EventsIndexVM[] x = service.GetAllEventFromDB();
             return View(x);
         }
     }

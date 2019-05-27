@@ -15,6 +15,9 @@ namespace Biluthyrning_AB.Models.Entities
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string PersonNumber { get; set; }
+        public int NumberOfOrders { get; set; }
+        public double KilometersDriven { get; set; }
+        public int MembershipLevel { get; set; }
 
         public virtual ICollection<Events> Events { get; set; }
         public virtual ICollection<Orders> Orders { get; set; }

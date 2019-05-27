@@ -19,6 +19,9 @@
         <div class="col-sm">
             AnvändarID
         </div>
+        <div class="col-sm">
+            Medlemsnivå
+        </div>
     </div>
     <div class="row" style="background-color: bisque">
 
@@ -33,6 +36,20 @@
         </div>
         <div class="col-sm">
             @Model.Id
+        </div>        
+        <div class="col-sm">
+            @switch (@Model.MembershipLevel)
+            {
+                case 0:<span>Standard</span>
+                    break;
+                case 1: <span>Brons</span>
+                    break;
+                case 2: <span>Silver</span>
+                    break;
+                case 3: <span>Guld</span>
+                    break;
+
+            }
         </div>
 
     </div>
@@ -82,7 +99,7 @@
                 </div>
             </div>
         }
-    }
+            }
     <br />
     <br />
     <br />

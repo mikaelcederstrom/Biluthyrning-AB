@@ -11,6 +11,7 @@ namespace Biluthyrning_AB.Models.ViewModels
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string PersonNumber { get; set; }
+        public int MembershipLevel { get; set; }
         public CustomersDetailsOrders[] Orders { get; set; }
     }
 

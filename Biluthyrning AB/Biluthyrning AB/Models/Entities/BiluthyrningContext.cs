@@ -34,7 +34,7 @@ namespace Biluthyrning_AB.Models.Entities
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasAnnotation("ProductVersion", "2.2.3-servicing-35854");
+            modelBuilder.HasAnnotation("ProductVersion", "2.2.4-servicing-10062");
 
             modelBuilder.Entity<CarCleaning>(entity =>
             {
@@ -46,7 +46,7 @@ namespace Biluthyrning_AB.Models.Entities
                     .WithMany(p => p.CarCleaning)
                     .HasForeignKey(d => d.CarId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__CarCleani__CarId__267ABA7A");
+                    .HasConstraintName("FK__CarCleani__CarId__7F2BE32F");
             });
 
             modelBuilder.Entity<CarRetire>(entity =>
@@ -59,7 +59,7 @@ namespace Biluthyrning_AB.Models.Entities
                     .WithMany(p => p.CarRetire)
                     .HasForeignKey(d => d.CarId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__CarRetire__CarId__2C3393D0");
+                    .HasConstraintName("FK__CarRetire__CarId__797309D9");
             });
 
             modelBuilder.Entity<CarService>(entity =>
@@ -72,13 +72,13 @@ namespace Biluthyrning_AB.Models.Entities
                     .WithMany(p => p.CarService)
                     .HasForeignKey(d => d.CarId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__CarServic__CarId__29572725");
+                    .HasConstraintName("FK__CarServic__CarId__7C4F7684");
             });
 
             modelBuilder.Entity<Cars>(entity =>
             {
                 entity.HasIndex(e => e.Registrationnumber)
-                    .HasName("UQ__Cars__B7F512B9811C4495")
+                    .HasName("UQ__Cars__B7F512B974C2FB03")
                     .IsUnique();
 
                 entity.Property(e => e.CarType)
@@ -93,7 +93,7 @@ namespace Biluthyrning_AB.Models.Entities
             modelBuilder.Entity<Customers>(entity =>
             {
                 entity.HasIndex(e => e.PersonNumber)
-                    .HasName("UQ__Customer__85D6AE8F96A86E00")
+                    .HasName("UQ__Customer__85D6AE8F44FEF51D")
                     .IsUnique();
 
                 entity.Property(e => e.FirstName).IsRequired();
@@ -125,17 +125,17 @@ namespace Biluthyrning_AB.Models.Entities
                 entity.HasOne(d => d.Booking)
                     .WithMany(p => p.Events)
                     .HasForeignKey(d => d.BookingId)
-                    .HasConstraintName("FK__Events__BookingI__398D8EEE");
+                    .HasConstraintName("FK__Events__BookingI__59C55456");
 
                 entity.HasOne(d => d.Car)
                     .WithMany(p => p.Events)
                     .HasForeignKey(d => d.CarId)
-                    .HasConstraintName("FK__Events__CarID__37A5467C");
+                    .HasConstraintName("FK__Events__CarID__57DD0BE4");
 
                 entity.HasOne(d => d.Customer)
                     .WithMany(p => p.Events)
                     .HasForeignKey(d => d.CustomerId)
-                    .HasConstraintName("FK__Events__Customer__38996AB5");
+                    .HasConstraintName("FK__Events__Customer__58D1301D");
             });
 
             modelBuilder.Entity<Orders>(entity =>
@@ -152,13 +152,13 @@ namespace Biluthyrning_AB.Models.Entities
                     .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.CarId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Orders__CarID__31EC6D26");
+                    .HasConstraintName("FK__Orders__CarID__531856C7");
 
                 entity.HasOne(d => d.Customer)
                     .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.CustomerId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Orders__Customer__32E0915F");
+                    .HasConstraintName("FK__Orders__Customer__540C7B00");
             });
         }
     }

@@ -21,13 +21,27 @@ namespace Biluthyrning_AB.Models
             {
                 FirstName = viewModel.FirstName,
                 LastName = viewModel.LastName,
-                PersonNumber = viewModel.PersonNumber
+                PersonNumber = viewModel.PersonNumber,
+                KilometersDriven = 0,
+                NumberOfOrders = 0,
+                MembershipLevel = 0                
             };
 
             context.Customers.Add(x);
+            Events y = AddEventToDB("Användare skapad", x.Id, null, null);
+            context.Events.Add(y);            
             context.SaveChanges();
         }
-
+        private Events AddEventToDB(string eventType, int? customerId, int? carId, int? orderId)
+        {
+            Events x = new Events();
+            x.EventType = eventType;
+            x.CarId = carId;
+            x.CustomerId = customerId;
+            x.BookingId = orderId;
+            x.Date = DateTime.Now;
+            return x;
+        }
         internal CustomersListOfAll[] GetAllCustomersFromDB()
         {
             return context.Customers
@@ -38,6 +52,7 @@ namespace Biluthyrning_AB.Models
                     PersonNumber = c.PersonNumber,
                     ID = c.Id,
                     ActiveOrder = c.Orders.Where(o => o.CarReturned == false).Any()
+                     
 
                 })
                 .OrderByDescending(c => c.ActiveOrder).ThenBy(c => c.PersonNumber)
@@ -54,6 +69,7 @@ namespace Biluthyrning_AB.Models
                     LastName = c.LastName,
                     Id = c.Id,
                     PersonNumber = c.PersonNumber,
+                    MembershipLevel = c.MembershipLevel,                    
                     Orders = context.Orders
                     .Where(o => o.CustomerId == id)
                     .Select(o => new CustomersDetailsOrders
