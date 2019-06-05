@@ -16,13 +16,7 @@ namespace Biluthyrning_AB.Models
             this.context = context;
         }
         public Customers Add(Customers customer)
-        {
-            //Customers x = new Customers
-            //{
-            //    FirstName = customer.FirstName,
-            //    LastName = customer.LastName,
-            //    PersonNumber = customer.PersonNumber
-            //};
+        {          
             context.Customers.Add(customer);
             context.SaveChanges();
             return customer;
