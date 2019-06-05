@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Biluthyrning_AB.Models;
+using Biluthyrning_AB.Models.Entities;
 using Biluthyrning_AB.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,11 +11,13 @@ namespace Biluthyrning_AB.Controllers
 {
     public class CustomersController : Controller
     {
-        public CustomersController(CustomersService service)
+        public CustomersController(CustomersService service, ICustomersRepository customersRepository)
         {
             this.service = service;
+            this.customersRepository = customersRepository;
         }
         readonly CustomersService service;
+        private readonly ICustomersRepository customersRepository;
 
         [Route("~/customers/index")]
         [HttpGet]
@@ -31,13 +34,14 @@ namespace Biluthyrning_AB.Controllers
 
         [Route("~/customers/add")]
         [HttpPost]
-        public IActionResult Add(CustomersAddVM viewModel)
+        public IActionResult Add(Customers viewModel)
         {
             if (!ModelState.IsValid)
                 return View(viewModel);
             try
             {
-            service.AddCustomerToDB(viewModel);
+                customersRepository.Add(viewModel);
+                //service.AddCustomerToDB(viewModel);
             }
             catch (Exception)
             {
