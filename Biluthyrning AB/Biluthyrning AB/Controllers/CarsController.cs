@@ -12,11 +12,14 @@ namespace Biluthyrning_AB.Controllers
     public class CarsController : Controller
     {
 
-        public CarsController(CarsService service)
+        public CarsController(CarsService service, ICarsRepository carsRepository)
         {
             this.service = service;
+            this.carsRepository = carsRepository;
         }
         readonly CarsService service;
+        private readonly ICarsRepository carsRepository;
+
         public IActionResult Index()
         {
             return View();
@@ -37,17 +40,17 @@ namespace Biluthyrning_AB.Controllers
         [Route("~/AvailableCars")]
         public IActionResult AvailableCars(CarsListOfAllVM[] x)
         {
-
             //CarsListOfAllVM[] x = service.CheckCarsAvailabilityDuringPeriod(viewModel);
             return PartialView("_AvailableCars", x);
-
         }
+
         [Route("~/cars/add")]
         [HttpGet]
         public IActionResult Add()
         {
             return View();
         }
+
 
         [Route("~/cars/add")]
         [HttpPost]
@@ -56,13 +59,14 @@ namespace Biluthyrning_AB.Controllers
             if (!ModelState.IsValid)
                 return View(viewModel);
 
-            if (!service.AddCarToDB(viewModel))            
+            if (!service.AddNewCar(viewModel))
                 return View(viewModel);
             // Ändra till att returnera en partiellvy med att regnr redan är inlagt
             
             return RedirectToAction("ListOfAll", "Cars");
 
         }
+
         [Route("~/cars/remove")]
         [HttpGet]
         public IActionResult Remove()
@@ -85,45 +89,12 @@ namespace Biluthyrning_AB.Controllers
         {
             return View(service.GetCarById(id));
         }
-        [HttpGet]
-        [Route("~/rent/")]
-        public IActionResult Rent()
-        {
-            return View(service.DropDownListForCarType()); // Används ej längre
-        }
 
-        [HttpPost]
-        [Route("~/rent")]
-        public IActionResult Rent(CarsRentVM viewModel)
-        {
-            if (!ModelState.IsValid)
-                return View(viewModel);
 
-            CarsReceiptVM x = service.CreateReceipt(service.AddOrderToDB(viewModel), viewModel);
-            return RedirectToAction("Receipt", "Cars", x);
-        }
 
-        [HttpGet]
-        [Route("~/return")]
-        public IActionResult Return()
-        {
-            return View();
-        }
 
-        [HttpPost]
-        [Route("~/return")]
-        public IActionResult Return(CarsReturnVM viewModel)
-        {
-            viewModel.KilometerBeforeRental = service.GetKmFromOrderID(viewModel.OrderNumber);
 
-            if (viewModel.Kilometer < viewModel.KilometerBeforeRental)
-                return Content("Bilen kan inte lämnas tillbaka med en mätarställning som är lägre än vid hyrning"); // Return partialview, med texten 
-            if (!ModelState.IsValid || viewModel.Kilometer < viewModel.KilometerBeforeRental)
-                return View(viewModel);
 
-            CarsConfReturnVM cr = service.ReturnOrderInDB(viewModel);
-            return RedirectToAction("ConfReturn", "Cars", cr);
-        }
 
         [HttpGet]
         [Route("~/receipt")]
@@ -132,12 +103,7 @@ namespace Biluthyrning_AB.Controllers
             return View(viewModel);
         }
 
-        [HttpGet]
-        [Route("~/confReturn")]
-        public IActionResult ConfReturn(CarsConfReturnVM viewModel)
-        {
-            return View(viewModel);
-        }
+
 
         [HttpGet]
         [Route("~/listOfAllCars")]
@@ -180,7 +146,8 @@ namespace Biluthyrning_AB.Controllers
         [Route("~/Cleaning/")]
         public IActionResult Cleaning(int id)
         {
-            service.UpdateCleaningToDone(id);
+            //service.UpdateCleaningToDone(id);
+            carsRepository.UpdateCleaning(id, true);
             return RedirectToAction("Cleaning", "Cars");
         }
         [HttpPost]

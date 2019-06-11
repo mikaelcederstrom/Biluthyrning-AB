@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Biluthyrning_AB.Models.ViewModels
 {
-    public class CarsReturnVM
+    public class OrdersReturnVM
     {
 
         [Display(Name = "Bokningsnummer")]
@@ -14,7 +14,7 @@ namespace Biluthyrning_AB.Models.ViewModels
         [Display(Name = "Mätarställning")]
         [Required(ErrorMessage = "Skriv in mätarställningen")]
         [Range(0.0, 3000.0)]
-        public int Kilometer { get; set; }
+        public int Kilometre { get; set; }
         
         public int KilometerBeforeRental { get; set; }
 

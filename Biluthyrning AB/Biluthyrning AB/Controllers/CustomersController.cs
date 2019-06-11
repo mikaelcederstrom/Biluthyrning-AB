@@ -11,13 +11,11 @@ namespace Biluthyrning_AB.Controllers
 {
     public class CustomersController : Controller
     {
-        public CustomersController(CustomersService service, ICustomersRepository customersRepository)
+        public CustomersController(CustomersService service)
         {
             this.service = service;
-            this.customersRepository = customersRepository;
         }
         readonly CustomersService service;
-        private readonly ICustomersRepository customersRepository;
 
         [Route("~/customers/index")]
         [HttpGet]
@@ -34,14 +32,13 @@ namespace Biluthyrning_AB.Controllers
 
         [Route("~/customers/add")]
         [HttpPost]
-        public IActionResult Add(Customers viewModel)
+        public IActionResult Add(CustomersAddVM viewModel)
         {
             if (!ModelState.IsValid)
                 return View(viewModel);
             try
             {
-                customersRepository.Add(viewModel);
-                //service.AddCustomerToDB(viewModel);
+                service.AddCustomerToDB(viewModel);
             }
             catch (Exception)
             {
@@ -55,15 +52,13 @@ namespace Biluthyrning_AB.Controllers
         public IActionResult ListOfAll()
         {
             return View(service.GetAllCustomersFromDB());
-
         }
 
         [Route("~/customers/details/{id}")]
         [HttpGet]
         public IActionResult Details(int id)
-        {            
+        {
             return View(service.GetCustomerDetailsFromDB(id));
-
         }
     }
 }

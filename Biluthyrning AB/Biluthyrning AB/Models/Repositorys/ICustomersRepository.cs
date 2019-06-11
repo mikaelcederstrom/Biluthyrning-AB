@@ -9,11 +9,12 @@ namespace Biluthyrning_AB.Models
 {
     public interface ICustomersRepository
     {
-        Customers GetCustomer(int id);
-        IEnumerable<Customers> GetAllCustomers();
+        CustomersDetailsVM GetCustomerDetails(int id);
+        IEnumerable<CustomersListOfAllVM> GetAllCustomers();
         Customers Add(Customers customer);
         Customers Update(Customers customerChanges);
         Customers Delete(int id);
-            
+        int GetIdFromPersonNumber(string personNumber);
+        int GetMembershipLevelByID(int id);
     }
 }

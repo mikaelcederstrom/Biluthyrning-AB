@@ -1,4 +1,4 @@
-﻿@model Biluthyrning_AB.Models.ViewModels.CarsRentVM
+﻿@model Biluthyrning_AB.Models.ViewModels.OrdersRentVM
 
 @{
     ViewData["Title"] = "Hyrbil";
@@ -10,13 +10,7 @@
 </style>
 <div style="text-align: center">
     <h2>Fyll i uppgifter för hyrning av bil</h2><br />
-    <form asp-controller="Cars" asp-action="Rent" method="post">
-
-        @*<label asp-for="ListOfCarTypes"></label><br />
-        <select asp-for="SelectedCarTypeValue"
-                asp-items="Model.ListOfCarTypes"></select>
-        <span asp-validation-for="SelectedCarTypeValue"></span>
-        <br />*@
+    <form asp-controller="Orders" asp-action="Rent" method="post">
         <label asp-for="personNumber"></label><br />
         <input asp-for="personNumber" style="width: 165px" /><br />
         <span asp-validation-for="personNumber"> </span>
@@ -31,24 +25,12 @@
         <div id="divResult"></div>
 
     </form>
-    <button id="GetAvailableCars" @*onclick="AvailableCarsPost(); Ghost();" *@>List tillgängliga bilar</button>
+    <button id="GetAvailableCars" >List tillgängliga bilar</button>
 </div>
 @section scripts
 {
 <script>
-    //function AvailableCarsGet() {
-    //    $("#GetAvailableCars").click(function () {
-    //        $.ajax({
-    //            url: "/AvailableCars",
-    //            type: "Get",
-    //            success: function (result) {
-    //                console.log(result);
-    //                $("#divResult").html(result);
-    //            }
-    //        });
-
-    //    });
-    //}
+   
     function Ghost() {
         $("#GetAvailableCars").addClass("ghost");
     };

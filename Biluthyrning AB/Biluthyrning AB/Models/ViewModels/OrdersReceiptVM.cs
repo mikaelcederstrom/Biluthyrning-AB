@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Biluthyrning_AB.Models.ViewModels
 {
-    public class CarsConfReturnVM
+    public class OrdersReceiptVM
     {
         public double rentalPrice { get; set; }
         public int Id { get; set; }
@@ -15,7 +15,6 @@ namespace Biluthyrning_AB.Models.ViewModels
         public int KilometerAfterRental { get; set; }
         public DateTime ReturnDate { get; set; }
         public bool CarReturned { get; set; }
-
 
     }
 }

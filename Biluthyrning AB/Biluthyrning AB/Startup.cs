@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Biluthyrning_AB.Models;
 using Biluthyrning_AB.Models.Entities;
+using Biluthyrning_AB.Models.Repositorys;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -28,7 +29,11 @@ namespace Biluthyrning_AB
             services.AddTransient<CarsService>();
             services.AddTransient<CustomersService>();
             services.AddTransient<EventsService>();
+            services.AddTransient<OrdersService>();
             services.AddScoped<ICustomersRepository, CustomersRepository>();
+            services.AddScoped<ICarsRepository, CarsRepository>();
+            services.AddScoped<IEventsRepository, EventsRepository>();
+            services.AddScoped<IOrdersRepository, OrdersRepository>();
 
             services.AddMvc();
         }

@@ -9,29 +9,105 @@ namespace Biluthyrning_AB.Models
 {
     public class EventsService
     {
-        public EventsService(BiluthyrningContext context)
+        public EventsService(IEventsRepository eventsRepository)
         {
-            this.context = context;
+            this.eventsRepository = eventsRepository;
         }
-        readonly BiluthyrningContext context;
-
+        private readonly IEventsRepository eventsRepository;
+        
         internal EventsIndexVM[] GetAllEventFromDB()
         {
-            EventsIndexVM[] x = context.Events
-                .Select(e => new EventsIndexVM
-                {
-                    BookingId = e.BookingId,
-                    CarId = e.CarId,
-                    CarRegNr = e.Car.Registrationnumber,
-                    CustomerFirstName = e.Customer.FirstName,
-                    CustomerId = e.CustomerId,
-                    CustomerLastName = e.Customer.LastName,
-                    Date = e.Date,
-                    EventType = e.EventType,
+            return eventsRepository.GetAllEvents();
+        }
 
-                }).OrderByDescending(e => e.Date)
-                .ToArray();
-            return x;
+        internal void CreateAddedCarEvent(Cars car)
+        {
+            Events x = new Events()
+            {
+                EventType = "Bil tillagd",
+                CarId = car.Id,
+                CustomerId = null,
+                BookingId = null,
+                Date = DateTime.Now
+            };
+            eventsRepository.SaveEvent(x);
+        }
+        internal void CreateAddedCustomerEvent(Customers customer)
+        {
+            Events x = new Events()
+            {
+                EventType = "Användare skapad",
+                CarId = null,
+                CustomerId = customer.Id,
+                BookingId = null,
+                Date = DateTime.Now
+            };
+            eventsRepository.SaveEvent(x);
+        }
+
+        internal void CreateRemovedCarEvent(CarRetire car)
+        {
+            Events x = new Events()
+            {
+                EventType = "Bil borttagen",
+                CarId = car.CarId,
+                CustomerId = null,
+                BookingId = null,
+                Date = DateTime.Now
+            };
+            eventsRepository.SaveEvent(x);
+        }
+
+        internal void CreateNewOrderEvent(Orders order)
+        {
+            Events x = new Events()
+            {
+                EventType = "Bil bokad",
+                CarId = order.CarId,
+                CustomerId = order.CustomerId,
+                BookingId = order.Id,
+                Date = DateTime.Now
+            };
+            eventsRepository.SaveEvent(x);
+        }
+
+        internal void CreateReturnOrderEvent(Orders order)
+        {            
+             Events x = new Events()
+             {
+                 EventType = "Bil återlämnad",
+                 CarId = order.CarId,
+                 CustomerId = order.CustomerId,
+                 BookingId = order.Id,
+                 Date = DateTime.Now
+             };
+            eventsRepository.SaveEvent(x);
+        }
+
+        internal void CreateRetireCarEvent(CarRetire cr)
+        {
+            Events x = new Events()
+            {
+                EventType = "Bil borttagen",
+                CarId = cr.CarId,
+                CustomerId = null,
+                BookingId = null,
+                Date = DateTime.Now
+            };
+            eventsRepository.SaveEvent(x);           
+        }
+
+        internal void CreateCleaningCarEvent(CarCleaning cc)
+        {
+            Events x = new Events()
+            {
+                EventType = "Bil tvättad",
+                CarId = cc.CarId,
+                CustomerId = null,
+                BookingId = null,
+                Date = DateTime.Now
+            };
+            eventsRepository.SaveEvent(x);
         }
     }
 }

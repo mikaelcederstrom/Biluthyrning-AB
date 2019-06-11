@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Biluthyrning_AB.Models.ViewModels
 {
-    public class CustomersListOfAll
+    public class CustomersListOfAllVM
     {
         public int ID { get; set; }
         public string FirstName { get; set; }               

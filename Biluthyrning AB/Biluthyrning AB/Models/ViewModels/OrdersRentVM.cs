@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Biluthyrning_AB.Models.ViewModels
 {
-    public class CarsRentVM
+    public class OrdersRentVM
     {
         public string TempMessage { get; set; }
 
