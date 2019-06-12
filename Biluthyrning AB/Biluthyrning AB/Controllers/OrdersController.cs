@@ -35,11 +35,11 @@ namespace Biluthyrning_AB.Controllers
                 return View(viewModel);
 
             OrdersConfirmationVM x = ordersService.CreateReceipt(ordersService.AddOrderToDB(viewModel), viewModel);
-            return RedirectToAction("Receipt", "Orders", x);
+            return RedirectToAction("Confirmation", "Orders", x);
         }
         [HttpGet]
-        [Route("~/receipt")]
-        public IActionResult Receipt(OrdersConfirmationVM viewModel)
+        [Route("~/confirmation")]
+        public IActionResult Confirmation(OrdersConfirmationVM viewModel)
         {
             return View(viewModel);
         }
@@ -63,12 +63,12 @@ namespace Biluthyrning_AB.Controllers
                 return View(viewModel);
 
             OrdersReceiptVM or = ordersService.ReturnOrder(viewModel);
-            return RedirectToAction("ConfReturn", "Orders", or);
+            return RedirectToAction("receipt", "Orders", or);
         }
 
         [HttpGet]
-        [Route("~/confReturn")]
-        public IActionResult ConfReturn(OrdersReceiptVM viewModel)
+        [Route("~/receipt")]
+        public IActionResult Receipt(OrdersReceiptVM viewModel)
         {
             return View(viewModel);
         }
