@@ -41,15 +41,38 @@ namespace Biluthyrning_AB.Models
         {
             return customersRepository.GetCustomerDetails(id);
         }
-
         internal int GetCustomersIdFromPersonNumber(string personNumber)
         {
             return customersRepository.GetIdFromPersonNumber(personNumber);
         }
-
         internal int GetMembershipLevelByID(int id)
         {
             return customersRepository.GetMembershipLevelByID(id);
+        }
+        internal int UpdateMembershipLevel(Customers customer, double newKMToAdd)
+        {
+            customer.NumberOfOrders++;
+            customer.KilometersDriven = customer.KilometersDriven + newKMToAdd;
+
+            if (customer.MembershipLevel == 0 && customer.NumberOfOrders >= 3)
+            {
+                customer.MembershipLevel = 1;
+                eventsService.CreateMembershipUpdatedEvent(customer);
+               
+            }
+            if (customer.MembershipLevel == 1 && customer.NumberOfOrders >= 5)
+            {
+                customer.MembershipLevel = 2;
+                eventsService.CreateMembershipUpdatedEvent(customer);
+            }
+
+            if (customer.MembershipLevel == 2 && customer.KilometersDriven >= 1000)
+            {
+                customer.MembershipLevel = 3;
+                eventsService.CreateMembershipUpdatedEvent(customer);            
+            }
+            return customer.MembershipLevel;
+
         }
     }
 }

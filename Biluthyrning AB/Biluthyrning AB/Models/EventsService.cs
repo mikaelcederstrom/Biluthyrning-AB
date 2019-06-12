@@ -19,7 +19,6 @@ namespace Biluthyrning_AB.Models
         {
             return eventsRepository.GetAllEvents();
         }
-
         internal void CreateAddedCarEvent(Cars car)
         {
             Events x = new Events()
@@ -44,7 +43,6 @@ namespace Biluthyrning_AB.Models
             };
             eventsRepository.SaveEvent(x);
         }
-
         internal void CreateRemovedCarEvent(CarRetire car)
         {
             Events x = new Events()
@@ -57,7 +55,6 @@ namespace Biluthyrning_AB.Models
             };
             eventsRepository.SaveEvent(x);
         }
-
         internal void CreateNewOrderEvent(Orders order)
         {
             Events x = new Events()
@@ -70,7 +67,6 @@ namespace Biluthyrning_AB.Models
             };
             eventsRepository.SaveEvent(x);
         }
-
         internal void CreateReturnOrderEvent(Orders order)
         {            
              Events x = new Events()
@@ -83,7 +79,18 @@ namespace Biluthyrning_AB.Models
              };
             eventsRepository.SaveEvent(x);
         }
-
+        internal void CreateMembershipUpdatedEvent(Customers customer)
+        {        
+            Events x = new Events()
+            {
+                EventType = "Medlemskap uppgraderad",
+                CarId = null,
+                CustomerId = customer.Id,
+                BookingId = null,
+                Date = DateTime.Now
+            };
+            eventsRepository.SaveEvent(x);
+        }
         internal void CreateRetireCarEvent(CarRetire cr)
         {
             Events x = new Events()
@@ -96,13 +103,24 @@ namespace Biluthyrning_AB.Models
             };
             eventsRepository.SaveEvent(x);           
         }
-
         internal void CreateCleaningCarEvent(CarCleaning cc)
         {
             Events x = new Events()
             {
                 EventType = "Bil tvättad",
                 CarId = cc.CarId,
+                CustomerId = null,
+                BookingId = null,
+                Date = DateTime.Now
+            };
+            eventsRepository.SaveEvent(x);
+        }
+        internal void CreateServiceCarEvent(CarService cs)
+        {
+            Events x = new Events()
+            {
+                EventType = "Service av bil",
+                CarId = cs.CarId,
                 CustomerId = null,
                 BookingId = null,
                 Date = DateTime.Now

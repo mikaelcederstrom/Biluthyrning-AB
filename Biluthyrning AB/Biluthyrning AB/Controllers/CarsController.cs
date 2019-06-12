@@ -11,15 +11,12 @@ namespace Biluthyrning_AB.Controllers
 {
     public class CarsController : Controller
     {
-
-        public CarsController(CarsService service, ICarsRepository carsRepository)
+        public CarsController(CarsService service)
         {
             this.service = service;
-            this.carsRepository = carsRepository;
         }
         readonly CarsService service;
-        private readonly ICarsRepository carsRepository;
-
+        
         public IActionResult Index()
         {
             return View();
@@ -40,7 +37,6 @@ namespace Biluthyrning_AB.Controllers
         [Route("~/AvailableCars")]
         public IActionResult AvailableCars(CarsListOfAllVM[] x)
         {
-            //CarsListOfAllVM[] x = service.CheckCarsAvailabilityDuringPeriod(viewModel);
             return PartialView("_AvailableCars", x);
         }
 
@@ -64,7 +60,6 @@ namespace Biluthyrning_AB.Controllers
             // Ändra till att returnera en partiellvy med att regnr redan är inlagt
             
             return RedirectToAction("ListOfAll", "Cars");
-
         }
 
         [Route("~/cars/remove")]
@@ -88,22 +83,7 @@ namespace Biluthyrning_AB.Controllers
         public IActionResult Details(int id)
         {
             return View(service.GetCarById(id));
-        }
-
-
-
-
-
-
-
-        [HttpGet]
-        [Route("~/receipt")]
-        public IActionResult Receipt(CarsReceiptVM viewModel)
-        {
-            return View(viewModel);
-        }
-
-
+        }        
 
         [HttpGet]
         [Route("~/listOfAllCars")]
@@ -146,8 +126,7 @@ namespace Biluthyrning_AB.Controllers
         [Route("~/Cleaning/")]
         public IActionResult Cleaning(int id)
         {
-            //service.UpdateCleaningToDone(id);
-            carsRepository.UpdateCleaning(id, true);
+            service.UpdateCleaningToDone(id);
             return RedirectToAction("Cleaning", "Cars");
         }
         [HttpPost]

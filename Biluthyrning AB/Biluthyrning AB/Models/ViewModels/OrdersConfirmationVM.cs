@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Biluthyrning_AB.Models.ViewModels
 {
-    public class CarsReceiptVM
+    public class OrdersConfirmationVM
     {
         public int Id { get; set; }
         public string Personnumber { get; set; }

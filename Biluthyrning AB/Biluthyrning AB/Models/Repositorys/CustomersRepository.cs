@@ -15,19 +15,16 @@ namespace Biluthyrning_AB.Models
         {
             this.context = context;
         }
-
         public Customers Add(Customers customer)
         {           
             context.Customers.Add(customer);
             context.SaveChanges();
             return customer;
         }
-
         public Customers Delete(int id)
         {
             throw new NotImplementedException();
         }
-
         public IEnumerable<CustomersListOfAllVM> GetAllCustomers()
         {
             return context.Customers
@@ -40,7 +37,6 @@ namespace Biluthyrning_AB.Models
                           ActiveOrder = c.Orders.Where(o => o.CarReturned == false).Any()
                       }).ToArray();
         }
-
         public CustomersDetailsVM GetCustomerDetails(int id)
         {
             return context.Customers
@@ -64,7 +60,6 @@ namespace Biluthyrning_AB.Models
                        }).ToArray()
                 }).FirstOrDefault();
         }
-
         public int GetIdFromPersonNumber(string personNumber)
         {
             return context.Customers
@@ -72,7 +67,6 @@ namespace Biluthyrning_AB.Models
             .Select(p => p.Id)
             .FirstOrDefault();
         }
-
         public int GetMembershipLevelByID(int id)
         {
             return context.Customers
@@ -80,7 +74,6 @@ namespace Biluthyrning_AB.Models
                 .Select(o => o.MembershipLevel)
                 .FirstOrDefault();
         }
-
         public Customers Update(Customers customerChanges)
         {
             throw new NotImplementedException();

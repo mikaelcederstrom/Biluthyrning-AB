@@ -33,7 +33,6 @@ namespace Biluthyrning_AB.Models
                 }).OrderByDescending(e => e.Date)
                 .ToArray();
         }
-
         public void SaveEvent(Events e)
         {
             context.Events.Add(e);

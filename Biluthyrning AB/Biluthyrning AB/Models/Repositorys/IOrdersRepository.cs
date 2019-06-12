@@ -9,7 +9,6 @@ namespace Biluthyrning_AB.Models.Repositorys
     public interface IOrdersRepository
     {
         Orders Add(Orders order);
-
         int GetKilometreBeforeRental(int carId);
         int GetKmByID(int orderNumber);
         Orders GetOrderById(int orderNumber);

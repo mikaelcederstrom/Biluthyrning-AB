@@ -65,7 +65,6 @@ namespace Biluthyrning_AB.Models
                    .ToArray()
                }).FirstOrDefault();
         }
-
         public CarsListOfAllVM[] CheckCarsAvailabilityDuringPeriod(RentPeriodData dataModel)
         {
             return context.Cars
@@ -88,56 +87,52 @@ namespace Biluthyrning_AB.Models
            .ThenBy(c => c.CarType)
            .ToArray();
         }
-
-
         public bool CheckIfRegistrationNumberAlreadyExists(string regNr)
         {
             return context.Cars
                     .Where(c => c.Registrationnumber == regNr)
                     .Any();
-        }
-
-
-
+        }               
         public IEnumerable<CarsListOfAllVM> GetAllCars()
         {
-            throw new NotImplementedException();
+            return context.Cars
+                .Select(c => new CarsListOfAllVM
+                {
+                    AvailableForRent = c.AvailableForRent,
+                    CarType = c.CarType,
+                    Id = c.Id,
+                    Kilometer = c.Kilometer,
+                    Registrationnumber = c.Registrationnumber,
+                    customer = c.Orders
+                    //.Where(o => o.CarId == c.Id)
+                    .Select(o => new Customers
+                    {
+                        FirstName = o.Customer.FirstName,
+                        LastName = o.Customer.LastName,
+                        PersonNumber = o.Customer.PersonNumber,
+                        Id = o.CustomerId
+                    }).FirstOrDefault(),
+                    CleaningId = c.CarCleaning
+                    .Where(k => k.CarId == c.Id && !k.CleaningDone == true)
+                    .Select(k => k.Id).FirstOrDefault(),
+                    ServiceId = c.CarService
+                    .Where(s => s.CarId == c.Id && !s.ServiceDone == true)
+                    .Select(s => s.Id).FirstOrDefault(),
+                    RetireId = c.CarRetire
+                    .Where(r => r.CarId == c.Id)
+                    .Select(r => r.Id).FirstOrDefault(),
+                })
+                .OrderBy(c => c.RetireId)
+                .ThenBy(c => c.AvailableForRent)
+                .ThenBy(c => c.CarType)
+                .ToArray();
         }
-
-
-
         public Cars Update(Cars carChanges)
         {
             context.Cars.Update(carChanges);
             context.SaveChanges();
             return carChanges;
         }
-
-        public void UpdateAvailability(int carId, bool newAvailability)
-        {
-            Cars car = context.Cars
-                .Where(c => c.Id == carId)
-                .SingleOrDefault();
-
-            context.Update(car);
-            context.SaveChanges();
-        }
-
-        public void UpdateCleaning(int cleaningId, bool newCleaningStatus)
-        {
-            CarCleaning cc = context.CarCleaning
-              .Where(c => c.Id == cleaningId)
-              .Select(c => new CarCleaning
-              {
-                  Id = c.Id,
-                  CleaningDone = newCleaningStatus,
-                  CleaningDoneDate = DateTime.Now,
-                  CarId = c.CarId,
-                  FlaggedForCleaningDate = c.FlaggedForCleaningDate
-              }).SingleOrDefault();
-            context.Update(cc);
-        }
-
         public string GetTypeByID(int id)
         {
             return context.Cars
@@ -145,43 +140,75 @@ namespace Biluthyrning_AB.Models
              .Select(c => c.CarType)
              .FirstOrDefault();
         }
-
         public Cars GetCarByID(int id)
         {
             return context.Cars
                 .Where(c => c.Id == id)
                 .SingleOrDefault();
         }
-
         public void RetireCar(CarRetire cr)
         {
             context.CarRetire.Add(cr);
             context.SaveChanges();
         }
-
         public void ListForCleaning(CarCleaning cc)
         {
             context.CarCleaning.Add(cc);
             context.SaveChanges();
         }
-
         public void ListForService(CarService cs)
         {
             context.CarService.Add(cs);
             context.SaveChanges();
         }
-
         public void UpdateCleaning(CarCleaning cc)
         {
             context.CarCleaning.Update(cc);
             context.SaveChanges();
         }
-
         public CarCleaning GetCarCleaningByID(int id)
         {
             return context.CarCleaning
                 .Where(c => c.Id == id)
                 .SingleOrDefault();
+        }
+        public CarCleaningVM[] GetFullCleaningList()
+        {
+            return context.CarCleaning
+            .Select(s => new CarCleaningVM
+            {
+                CarId = s.CarId,
+                CleaningDone = s.CleaningDone,
+                CleaningDoneDate = s.CleaningDoneDate,
+                CleaningId = s.Id,
+                FlaggedForCleaningDate = s.FlaggedForCleaningDate
+            }).ToArray();
+        }
+        public CarServiceVM[] GetFullServiceList()
+        {
+            return context.CarService
+                .Select(s => new CarServiceVM
+                {
+                    CarId = s.CarId,
+                    FlaggedForServiceDate = s.FlaggedForServiceDate,
+                    Id = s.Id,
+                    ServiceDone = s.ServiceDone,
+                    ServiceDoneDate = s.ServiceDoneDate,
+                    CarType = s.Car.CarType,
+                    Kilometer = s.Car.Kilometer,
+                    Registrationnumber = s.Car.Registrationnumber
+                }).ToArray();
+        }
+        public CarService GetCarServiceById(int serviceId)
+        {
+           return context.CarService
+            .Where(s => s.Id == serviceId)
+            .SingleOrDefault();
+        }
+        public void UpdateCarService(CarService cs)
+        {
+            context.CarService.Update(cs);
+            context.SaveChanges();
         }
     }
 }

@@ -22,9 +22,10 @@ namespace Biluthyrning_AB.Models
             this.eventsService = eventsService;
             this.carsService = carsService;
         }
-        internal CarsReceiptVM CreateReceipt(int orderID, OrdersRentVM viewModel)
+
+        internal OrdersConfirmationVM CreateReceipt(int orderID, OrdersRentVM viewModel)
         {
-            return new CarsReceiptVM
+            return new OrdersConfirmationVM
             {
                 Id = orderID,
                 KilometerBeforeRental = ordersRepository.GetKilometreBeforeRental(viewModel.CarId),
@@ -48,7 +49,6 @@ namespace Biluthyrning_AB.Models
             //UpdateAvailability(viewModel.CarId);
             return order.Id;
         }
-
         internal OrdersReceiptVM ReturnOrder(OrdersReturnVM viewModel)
         {
             Orders order = ordersRepository.GetOrderById(viewModel.OrderNumber);
@@ -57,21 +57,16 @@ namespace Biluthyrning_AB.Models
             order.CarReturned = true;
             order.KilometerAfterRental = viewModel.Kilometre;
 
-            //var rentalDate = context.Orders.Where(o => o.Id == viewModel.OrderNumber).Select(o => o.RentalDate).FirstOrDefault();
-            //var membershipLevel = context.Orders.Where(o => o.Id == viewModel.OrderNumber).Select(o => o.Customer.MembershipLevel).FirstOrDefault();
-            //order.Cost = CalcRentalPrice(context.Orders.Where(o => o.Id == viewModel.OrderNumber).Select(o => o.CarId).FirstOrDefault(), viewModel.Kilometer, viewModel.KilometerBeforeRental, viewModel.Date, rentalDate, membershipLevel);
-
 
             int membershipLevel = customersService.GetMembershipLevelByID(order.CustomerId);
             var carType = carsService.GetCarTypeByID(order.CarId);
-
+            var KMDriven = (order.KilometerAfterRental - order.KilometerBeforeRental);
 
             order.Cost = CalcRentalPrice(carType, order.KilometerAfterRental, order.KilometerBeforeRental, order.ReturnDate, order.RentalDate, membershipLevel);
 
             ordersRepository.Update(order);
             eventsService.CreateReturnOrderEvent(order);
-
-
+            customersService.UpdateMembershipLevel(order.Customer, KMDriven);
             carsService.UpdateCarKMByID(order.CarId, order.KilometerAfterRental);
 
             return new OrdersReceiptVM
@@ -85,7 +80,6 @@ namespace Biluthyrning_AB.Models
                 rentalPrice = order.Cost
             };
         }
-
         private double CalcRentalPrice(string carType, int kilometerAfterRental, int kilometerBeforeRental, DateTime returnDate, DateTime rentalDate, int membershipLevel)
         {
             double kmPrice = 11.5;
@@ -127,7 +121,6 @@ namespace Biluthyrning_AB.Models
                     return 0.0;
             }
         }
-
         internal int GetKmByID(int orderNumber)
         {
             return ordersRepository.GetKmByID(orderNumber);

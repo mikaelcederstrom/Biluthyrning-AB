@@ -46,7 +46,6 @@ namespace Biluthyrning_AB
                 app.UseDeveloperExceptionPage();
             }
 
-           
             app.UseMvcWithDefaultRoute();
             app.UseStaticFiles();
         }

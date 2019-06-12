@@ -14,19 +14,10 @@ namespace Biluthyrning_AB.Models
         CarRetire Delete(CarRetire carToDelete);
         CarsRemoveVM[] ListOfCarsForRemoval();
         CarsListOfAllVM[] CheckCarsAvailabilityDuringPeriod(RentPeriodData dataModel);
-
-
         bool CheckIfRegistrationNumberAlreadyExists(string regNr);
         Cars Update(Cars carChanges);
-
-
-
-
         CarsDetailsVM GetCarsDetails(int id);
         IEnumerable<CarsListOfAllVM> GetAllCars();
-
-        void UpdateAvailability(int carId, bool newAvailability);
-        void UpdateCleaning(int cleaningId, bool newCleaningStatus);
         string GetTypeByID(int id);
         Cars GetCarByID(int id);
         void RetireCar(CarRetire cr);
@@ -34,5 +25,9 @@ namespace Biluthyrning_AB.Models
         void ListForService(CarService cs);
         void UpdateCleaning(CarCleaning cc);
         CarCleaning GetCarCleaningByID(int id);
+        CarCleaningVM[] GetFullCleaningList();
+        CarServiceVM[] GetFullServiceList();
+        CarService GetCarServiceById(int serviceId);
+        void UpdateCarService(CarService cs);
     }
 }

@@ -34,8 +34,14 @@ namespace Biluthyrning_AB.Controllers
             if (!ModelState.IsValid)
                 return View(viewModel);
 
-            CarsReceiptVM x = ordersService.CreateReceipt(ordersService.AddOrderToDB(viewModel), viewModel);
-            return RedirectToAction("Receipt", "Cars", x);
+            OrdersConfirmationVM x = ordersService.CreateReceipt(ordersService.AddOrderToDB(viewModel), viewModel);
+            return RedirectToAction("Receipt", "Orders", x);
+        }
+        [HttpGet]
+        [Route("~/receipt")]
+        public IActionResult Receipt(OrdersConfirmationVM viewModel)
+        {
+            return View(viewModel);
         }
 
         [HttpGet]
