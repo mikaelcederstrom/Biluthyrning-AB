@@ -16,22 +16,21 @@ namespace Biluthyrning_AB.Models
             this.context = context;
         }
 
-        public EventsIndexVM[] GetAllEvents()
+        public Events[] GetAllEvents()
         {
             return context.Events
-                .Select(e => new EventsIndexVM
+                .Select(e => new Events
                 {
+                    Id = e.Id,
                     BookingId = e.BookingId,
                     CarId = e.CarId,
-                    CarRegNr = e.Car.Registrationnumber,
-                    CustomerFirstName = e.Customer.FirstName,
-                    CustomerId = e.CustomerId,
-                    CustomerLastName = e.Customer.LastName,
+                    Car = e.Car,
+                    Customer = e.Customer,
                     Date = e.Date,
                     EventType = e.EventType,
-
+                    CustomerId = e.CustomerId
                 }).OrderByDescending(e => e.Date)
-                .ToArray();
+                  .ToArray();
         }
         public void SaveEvent(Events e)
         {

@@ -23,6 +23,7 @@ namespace Biluthyrning_AB.Controllers
         {
             return View();
         }
+
         [Route("~/customers/add")]
         [HttpGet]
         public IActionResult Add()

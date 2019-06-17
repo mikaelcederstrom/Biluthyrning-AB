@@ -4,6 +4,8 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <RootNamespace>Biluthyrning_AB</RootNamespace>
+    <Nullable>enable</Nullable>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,5 +18,7 @@
   <ItemGroup>
     <Folder Include="wwwroot\css\" />
   </ItemGroup>
+  
+  
 
 </Project>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Biluthyrning_AB.Models;
+using Biluthyrning_AB.Models.Data;
 using Biluthyrning_AB.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,10 +16,6 @@ namespace Biluthyrning_AB.Controllers
             this.ordersService = ordersService;
         }
         readonly OrdersService ordersService;
-        public IActionResult Index()
-        {
-            return View();
-        }
 
         [HttpGet]
         [Route("~/rent/")]
@@ -37,6 +34,7 @@ namespace Biluthyrning_AB.Controllers
             OrdersConfirmationVM x = ordersService.CreateReceipt(ordersService.AddOrderToDB(viewModel), viewModel);
             return RedirectToAction("Confirmation", "Orders", x);
         }
+
         [HttpGet]
         [Route("~/confirmation")]
         public IActionResult Confirmation(OrdersConfirmationVM viewModel)
@@ -58,7 +56,7 @@ namespace Biluthyrning_AB.Controllers
             viewModel.KilometerBeforeRental = ordersService.GetKmByID(viewModel.OrderNumber);
 
             if (viewModel.Kilometre < viewModel.KilometerBeforeRental)
-                return Content("Bilen kan inte lämnas tillbaka med en mätarställning som är lägre än vid hyrning"); // Return partialview, med texten 
+                return Content("Bilen kan inte lämnas tillbaka med en mätarställning som är lägre än vid hyrning");
             if (!ModelState.IsValid)
                 return View(viewModel);
 
@@ -71,6 +69,20 @@ namespace Biluthyrning_AB.Controllers
         public IActionResult Receipt(OrdersReceiptVM viewModel)
         {
             return View(viewModel);
+        }
+
+        [HttpPost]
+        [Route("~/AvailableCars")]
+        public IActionResult AvailableCars([FromBody]RentPeriodData dataModel)
+        {
+            return AvailableCars(ordersService.CheckCarsAvailabilityDuringPeriod(dataModel));
+        }
+
+        [HttpGet]
+        [Route("~/AvailableCars")]
+        public IActionResult AvailableCars(AvailableCarsData[] x)
+        {
+            return PartialView("_AvailableCars", x);
         }
     }
 }

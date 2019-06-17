@@ -9,7 +9,7 @@ namespace Biluthyrning_AB.Models
 {
     public interface IEventsRepository
     {
-        EventsIndexVM[] GetAllEvents();
+        Events[] GetAllEvents();
         void SaveEvent(Events e);
     }
 }

@@ -40,14 +40,12 @@
     $("#GetAvailableCars").click(function () {
         var RentalDate = $("#rentalDate").val();
         var ReturnDate = $("#returnDate").val();
-        console.log(RentalDate);
-        var viewModel = { RentalDate: RentalDate, ReturnDate: ReturnDate };
+        var dataModel = { RentalDate: RentalDate, ReturnDate: ReturnDate };
         request = $.ajax({
             url: "/AvailableCars",
             type: "Post",           
-            data: JSON.stringify(viewModel),
+            data: JSON.stringify(dataModel),
             contentType: "application/json; charset=utf-8",
-            //dataType: "json", // Förväntar sig då svaret i json och inte html. 
             success: function (result) {
                 Ghost();
                 $("#divResult").html(result);

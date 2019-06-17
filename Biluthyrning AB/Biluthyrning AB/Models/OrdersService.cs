@@ -1,4 +1,5 @@
-﻿using Biluthyrning_AB.Models.Entities;
+﻿using Biluthyrning_AB.Models.Data;
+using Biluthyrning_AB.Models.Entities;
 using Biluthyrning_AB.Models.Repositorys;
 using Biluthyrning_AB.Models.ViewModels;
 using System;
@@ -46,7 +47,6 @@ namespace Biluthyrning_AB.Models
 
             ordersRepository.Add(order);
             eventsService.CreateNewOrderEvent(order);
-            //UpdateAvailability(viewModel.CarId);
             return order.Id;
         }
         internal OrdersReceiptVM ReturnOrder(OrdersReturnVM viewModel)
@@ -80,6 +80,20 @@ namespace Biluthyrning_AB.Models
                 rentalPrice = order.Cost
             };
         }
+
+        internal AvailableCarsData[] CheckCarsAvailabilityDuringPeriod(RentPeriodData dataModel)
+        {
+
+            var cars = carsService.CheckCarsAvailabilityDuringPeriod(dataModel);
+            return cars
+                 .Select(c => new AvailableCarsData
+                 {
+                     CarType = c.CarType,
+                     Id = c.Id,
+                     Registrationnumber = c.Registrationnumber
+                 }).ToArray();
+        }
+
         private double CalcRentalPrice(string carType, int kilometerAfterRental, int kilometerBeforeRental, DateTime returnDate, DateTime rentalDate, int membershipLevel)
         {
             double kmPrice = 11.5;

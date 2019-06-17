@@ -21,24 +21,12 @@ namespace Biluthyrning_AB.Controllers
         {
             return View();
         }
+
         [Route("")]
         public IActionResult Home()
         {
             return View();
-        }
-        [HttpPost]
-        [Route("~/AvailableCars")]
-        public IActionResult AvailableCars([FromBody]RentPeriodData viewModel)
-        {
-            CarsListOfAllVM[] x = service.CheckCarsAvailabilityDuringPeriod(viewModel);
-            return AvailableCars(x);
-        }
-        [HttpGet]
-        [Route("~/AvailableCars")]
-        public IActionResult AvailableCars(CarsListOfAllVM[] x)
-        {
-            return PartialView("_AvailableCars", x);
-        }
+        }     
 
         [Route("~/cars/add")]
         [HttpGet]
@@ -46,7 +34,6 @@ namespace Biluthyrning_AB.Controllers
         {
             return View();
         }
-
 
         [Route("~/cars/add")]
         [HttpPost]
@@ -57,7 +44,6 @@ namespace Biluthyrning_AB.Controllers
 
             if (!service.AddNewCar(viewModel))
                 return View(viewModel);
-            // Ändra till att returnera en partiellvy med att regnr redan är inlagt
             
             return RedirectToAction("ListOfAll", "Cars");
         }
@@ -66,8 +52,7 @@ namespace Biluthyrning_AB.Controllers
         [HttpGet]
         public IActionResult Remove()
         {
-            CarsRemoveVM[] x = service.ListOfAllCarsRemove();
-            return View(x);
+            return View(service.ListOfAllCarsRemove());
         }
 
         [Route("~/cars/remove")]
@@ -76,8 +61,8 @@ namespace Biluthyrning_AB.Controllers
         {
             service.RemoveCars(viewModel);
             return RedirectToAction("Remove", "Cars");
-
         }
+
         [Route("~/cars/details/{id}")]
         [HttpGet]
         public IActionResult Details(int id)
@@ -89,8 +74,7 @@ namespace Biluthyrning_AB.Controllers
         [Route("~/listOfAllCars")]
         public IActionResult ListOfAll()
         {
-            CarsListOfAllVM[] x = service.GetAllCarsFromDB();
-            return View(x);
+            return View(service.GetAllCarsFromDB());
         }
 
         [HttpGet]
@@ -107,6 +91,7 @@ namespace Biluthyrning_AB.Controllers
             service.UpdateServiceToDone(id);
             return RedirectToAction("Service", "Cars");
         }
+
         [HttpPost]
         public IActionResult ServiceFromCarList(int id)
         {
@@ -118,7 +103,6 @@ namespace Biluthyrning_AB.Controllers
         [Route("~/cleaning")]
         public IActionResult Cleaning()
         {
-
             return View(service.GetCleaningListFromDB());
         }
 
@@ -129,6 +113,7 @@ namespace Biluthyrning_AB.Controllers
             service.UpdateCleaningToDone(id);
             return RedirectToAction("Cleaning", "Cars");
         }
+
         [HttpPost]
         public IActionResult CleaningFromCarList(int id)
         {

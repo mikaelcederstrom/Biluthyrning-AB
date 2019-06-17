@@ -35,11 +35,43 @@ namespace Biluthyrning_AB.Models
         }
         internal CustomersListOfAllVM[] GetAllCustomersFromDB()
         {
-            return customersRepository.GetAllCustomers().ToArray();
+            Customers[] customers = customersRepository.GetAllCustomers().ToArray();
+            CustomersListOfAllVM[] cl = customers
+                .Select(c => new CustomersListOfAllVM
+                {
+                    FirstName = c.FirstName,
+                    LastName = c.LastName,
+                    PersonNumber = c.PersonNumber,
+                    ID = c.Id,
+                    ActiveOrder = c.Orders.Any()
+                }).ToArray();
+            return cl;
         }
         internal CustomersDetailsVM GetCustomerDetailsFromDB(int id)
         {
-            return customersRepository.GetCustomerDetails(id);
+            Customers customer = customersRepository.GetCustomerDetails(id);
+
+            CustomersDetailsVM cd = new CustomersDetailsVM
+            {
+                FirstName = customer.FirstName,
+                LastName = customer.LastName,
+                Id = customer.Id,
+                PersonNumber = customer.PersonNumber,
+                MembershipLevel = customer.MembershipLevel
+            };
+
+            cd.Orders = customer.Orders
+                     .Select(o => new CustomersDetailsOrders
+                     {
+                         CarReturned = o.CarReturned,
+                         Id = o.Id,
+                         KilometerAfterRental = o.KilometerAfterRental,
+                         KilometerBeforeRental = o.KilometerBeforeRental,
+                         RentalDate = o.RentalDate,
+                         ReturnDate = o.ReturnDate
+                     }).ToArray();
+
+            return cd;
         }
         internal int GetCustomersIdFromPersonNumber(string personNumber)
         {

@@ -117,25 +117,20 @@ namespace Biluthyrning_AB.Models.Entities
 
                 entity.Property(e => e.Date).HasColumnType("datetime");
 
-                entity.Property(e => e.EventType)
-                    .IsRequired()
-                    .HasMaxLength(32)
-                    .IsUnicode(false);
-
                 entity.HasOne(d => d.Booking)
                     .WithMany(p => p.Events)
                     .HasForeignKey(d => d.BookingId)
-                    .HasConstraintName("FK__Events__BookingI__59C55456");
+                    .HasConstraintName("FK__Events__BookingI__6442E2C9");
 
                 entity.HasOne(d => d.Car)
                     .WithMany(p => p.Events)
                     .HasForeignKey(d => d.CarId)
-                    .HasConstraintName("FK__Events__CarID__57DD0BE4");
+                    .HasConstraintName("FK__Events__CarID__625A9A57");
 
                 entity.HasOne(d => d.Customer)
                     .WithMany(p => p.Events)
                     .HasForeignKey(d => d.CustomerId)
-                    .HasConstraintName("FK__Events__Customer__58D1301D");
+                    .HasConstraintName("FK__Events__Customer__634EBE90");
             });
 
             modelBuilder.Entity<Orders>(entity =>

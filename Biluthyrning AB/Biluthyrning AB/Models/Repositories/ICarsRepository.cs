@@ -12,12 +12,12 @@ namespace Biluthyrning_AB.Models
     {
         Cars Add(Cars car);
         CarRetire Delete(CarRetire carToDelete);
-        CarsRemoveVM[] ListOfCarsForRemoval();
-        CarsListOfAllVM[] CheckCarsAvailabilityDuringPeriod(RentPeriodData dataModel);
+        IEnumerable<Cars> ListOfCarsForRemoval();
+        IEnumerable<Cars> CheckCarsAvailabilityDuringPeriod(RentPeriodData dataModel);
         bool CheckIfRegistrationNumberAlreadyExists(string regNr);
         Cars Update(Cars carChanges);
-        CarsDetailsVM GetCarsDetails(int id);
-        IEnumerable<CarsListOfAllVM> GetAllCars();
+        IEnumerable<Cars> GetCarsDetails(int id);
+        IEnumerable<Cars> GetAllCars();
         string GetTypeByID(int id);
         Cars GetCarByID(int id);
         void RetireCar(CarRetire cr);
@@ -25,8 +25,8 @@ namespace Biluthyrning_AB.Models
         void ListForService(CarService cs);
         void UpdateCleaning(CarCleaning cc);
         CarCleaning GetCarCleaningByID(int id);
-        CarCleaningVM[] GetFullCleaningList();
-        CarServiceVM[] GetFullServiceList();
+        IEnumerable<CarCleaning> GetFullCleaningList();
+        IEnumerable<CarService> GetFullServiceList();
         CarService GetCarServiceById(int serviceId);
         void UpdateCarService(CarService cs);
     }

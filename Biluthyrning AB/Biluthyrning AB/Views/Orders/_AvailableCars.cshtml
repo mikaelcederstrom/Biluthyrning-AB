@@ -1,0 +1,11 @@
+﻿@model Biluthyrning_AB.Models.Data.AvailableCarsData[]
+<br />
+<select name="CarId" style="width: 165px">
+
+    @for (int i = 0; i < Model.Length; i++)
+    {
+        <option value="@Model[i].Id">@Model[i].CarType, @Model[i].Registrationnumber</option>
+    }
+</select>
+<br />
+<input type="submit" value="Boka" style="width: 165px" />

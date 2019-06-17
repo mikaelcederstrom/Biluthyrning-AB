@@ -18,8 +18,6 @@ namespace Biluthyrning_AB.Models.ViewModels
     public class CustomersDetailsOrders
     {
         public int Id { get; set; }
-        //public int CarId { get; set; }
-        //public int CustomerId { get; set; }
         public int KilometerBeforeRental { get; set; }
         public DateTime RentalDate { get; set; }
         public int KilometerAfterRental { get; set; }

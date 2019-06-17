@@ -41,7 +41,7 @@
                 <div class="col-sm">
                     @if (@Model[i].AvailableForRent == false)
                     {
-                        <span>Ja, till @Model[i].customer.FirstName @Model[i].customer.LastName (<a asp-controller="Customers" asp-action="Details" asp-route-id="@Model[i].customer.Id">@Model[i].customer.PersonNumber</a>)</span>
+                        <span>Ja</span>
                     }
                     @if (@Model[i].AvailableForRent == true)
                     {
@@ -79,7 +79,7 @@
                 <div class="col-sm">
                     @if (@Model[i].RetireId != 0)
                     {
-                        <span>Ja@*, till @Model[i].customer.FirstName @Model[i].customer.LastName (<a asp-controller="Customers" asp-action="Details" asp-route-id="@Model[i].customer.Id">@Model[i].customer.PersonNumber</a>)*@</span>
+                        <span>Ja</span>
                     }
                     @if (@Model[i].RetireId == 0)
                     {

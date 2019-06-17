@@ -27,8 +27,6 @@
 
         @for (int i = 0; i < Model.Length; i++)
         {
-            //if (i % 2 == 0)
-            //{
                 <div class="row" style="background-color: @(i % 2 == 0 ? "bisque" : "white")">
 
                     <div class="col-sm">
@@ -49,31 +47,6 @@
                         <input type="checkbox" name="[@i].Remove" value="true"><input name="[@i].Remove" type="hidden" value="false" />
                     </div>
                 </div>
-            //}
-
-            @*if (i % 2 == 1)
-            {
-                <div class="row" style="background-color: white">
-                    <div class="col-sm">
-                        @Model[i].CarType
-                    </div>
-                    <div class="col-sm">
-                        @Model[i].Registrationnumber
-                    </div>
-                    <div class="col-sm">
-                        @Model[i].Kilometer
-                    </div>
-
-                    <div class="col-sm">
-                        <input name="[@i].CarType" value="@Model[i].CarType" type="hidden" />
-                        <input name="[@i].Registrationnumber" value="@Model[i].Registrationnumber" type="hidden" />
-                        <input name="[@i].Kilometer" value="@Model[i].Kilometer" type="hidden" />
-                        <input name="[@i].CarId" value="@Model[i].CarId" type="hidden" />
-
-                        <input type="checkbox" name="[@i].Remove" value="true"><input name="[@i].Remove" type="hidden" value="false" />
-                    </div>
-                </div>
-            }*@
         }
     </div>
     <div style="text-align:center">

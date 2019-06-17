@@ -29,103 +29,94 @@ namespace Biluthyrning_AB.Models
             context.SaveChanges();
             return carToDelete;
         }
-        public CarsRemoveVM[] ListOfCarsForRemoval()
+        public IEnumerable<Cars> ListOfCarsForRemoval()
         {
             return context.Cars
-              .Where(c => c.CarRetire.Count == 0)
-              .Select(c => new CarsRemoveVM
-              {
-                  CarId = c.Id,
-                  CarType = c.CarType,
-                  Kilometer = c.Kilometer,
-                  Registrationnumber = c.Registrationnumber,
-                  Remove = false
-              })
-              .ToArray();
-        }
-        public CarsDetailsVM GetCarsDetails(int id)
-        {
-            return context.Cars
-               .Where(c => c.Id == id)
-               .Select(c => new CarsDetailsVM
+               .Where(k => k.CarRetire.Count == 0)
+               .Select(k => new Cars
                {
-                   AvailableForRent = c.AvailableForRent,
-                   CarType = c.CarType,
-                   Kilometer = c.Kilometer,
-                   Registrationnumber = c.Registrationnumber,
-                   Events = c.Events.Select(e => new CarsDetailsVMEvents
-                   {
-                       EventType = e.EventType,
-                       BookingId = e.BookingId,
-                       CustomerFirstName = e.Customer.FirstName,
-                       CustomerLastName = e.Customer.LastName,
-                       CustomerId = e.CustomerId,
-                       Date = e.Date
-                   }).OrderByDescending(e => e.Date)
-                   .ToArray()
-               }).FirstOrDefault();
+                   Id = k.Id,
+                   CarType = k.CarType,
+                   Kilometer = k.Kilometer,
+                   Registrationnumber = k.Registrationnumber
+               });
         }
-        public CarsListOfAllVM[] CheckCarsAvailabilityDuringPeriod(RentPeriodData dataModel)
+        public IEnumerable<Cars> GetCarsDetails(int id)
+        {
+            IEnumerable<Cars> car = context.Cars
+                .Where(c => c.Id == id)
+                .Select(c => new Cars
+                {
+                    AvailableForRent = c.AvailableForRent,
+                    CarType = c.CarType,
+                    Kilometer = c.Kilometer,
+                    Registrationnumber = c.Registrationnumber,
+                    Events = c.Events.Select
+                            (e => new Events
+                            {
+                                EventType = e.EventType,
+                                BookingId = e.BookingId,
+                                Customer = e.Customer,
+                                CustomerId = e.CustomerId,
+                                Date = e.Date
+                            }).OrderByDescending(e => e.Date).ToList()
+                });
+            return car;
+        }
+        public IEnumerable<Cars> CheckCarsAvailabilityDuringPeriod(RentPeriodData dataModel)
         {
             return context.Cars
-           .Where(c => (c.CarCleaning.All(k => k.CleaningDone == true) || c.CarCleaning.Count == 0) &&
-                                               (!c.CarRetire.Any() || c.CarRetire.Count == 0) &&
-                                               (c.CarService.All(s => !s.ServiceDone == false) || c.CarService.Count == 0)
-                                               && (c.Orders.All(o => (!((dataModel.RentalDate >= o.RentalDate && dataModel.RentalDate <= o.ReturnDate) || (dataModel.ReturnDate >= o.RentalDate && dataModel.ReturnDate <= o.ReturnDate)) || o.CarReturned == true || c.Orders.Count == 0))))
-           .Select(c => new CarsListOfAllVM
+                     .Where(c => (c.CarCleaning.All(k => k.CleaningDone == true) || c.CarCleaning.Count == 0))
+                     .Where(c => (!c.CarRetire.Any() || c.CarRetire.Count == 0))
+                     .Where(c => (c.CarService.All(s => !s.ServiceDone == false) || c.CarService.Count == 0))
+                     .Where(c => (c.Orders.All(o => (!((dataModel.RentalDate >= o.RentalDate && dataModel.RentalDate <= o.ReturnDate) ||
+                                  (dataModel.ReturnDate >= o.RentalDate && dataModel.ReturnDate <= o.ReturnDate)) || o.CarReturned == true || c.Orders.Count == 0))))
+           .Select(c => new Cars
            {
-               AvailableForRent = true,
+               AvailableForRent = c.AvailableForRent,
                CarType = c.CarType,
                Id = c.Id,
                Kilometer = c.Kilometer,
                Registrationnumber = c.Registrationnumber,
-               customer = c.Orders
-               .Select(o => o.Customer)
-               .FirstOrDefault()
+               Orders = c.Orders
+                .Select(o => new Orders
+                {
+                    Customer = o.Customer
+                }).ToList()
            })
            .OrderBy(c => c.AvailableForRent)
-           .ThenBy(c => c.CarType)
-           .ToArray();
+           .ThenBy(c => c.CarType);
         }
         public bool CheckIfRegistrationNumberAlreadyExists(string regNr)
         {
             return context.Cars
                     .Where(c => c.Registrationnumber == regNr)
                     .Any();
-        }               
-        public IEnumerable<CarsListOfAllVM> GetAllCars()
+        }
+        public IEnumerable<Cars> GetAllCars()
         {
             return context.Cars
-                .Select(c => new CarsListOfAllVM
+                .Select(c => new Cars
                 {
-                    AvailableForRent = c.AvailableForRent,
                     CarType = c.CarType,
                     Id = c.Id,
                     Kilometer = c.Kilometer,
                     Registrationnumber = c.Registrationnumber,
-                    customer = c.Orders
-                    //.Where(o => o.CarId == c.Id)
-                    .Select(o => new Customers
-                    {
-                        FirstName = o.Customer.FirstName,
-                        LastName = o.Customer.LastName,
-                        PersonNumber = o.Customer.PersonNumber,
-                        Id = o.CustomerId
-                    }).FirstOrDefault(),
-                    CleaningId = c.CarCleaning
-                    .Where(k => k.CarId == c.Id && !k.CleaningDone == true)
-                    .Select(k => k.Id).FirstOrDefault(),
-                    ServiceId = c.CarService
-                    .Where(s => s.CarId == c.Id && !s.ServiceDone == true)
-                    .Select(s => s.Id).FirstOrDefault(),
-                    RetireId = c.CarRetire
-                    .Where(r => r.CarId == c.Id)
-                    .Select(r => r.Id).FirstOrDefault(),
-                })
-                .OrderBy(c => c.RetireId)
-                .ThenBy(c => c.AvailableForRent)
-                .ThenBy(c => c.CarType)
-                .ToArray();
+                    Orders = c.Orders
+                        .Where(o => o.CarReturned == true)
+                        .Select(o => new Orders
+                        {
+                            CarReturned = o.CarReturned
+                        }).ToList(),
+                    CarCleaning = c.CarCleaning
+                    .Where(k => !k.CleaningDone == true)
+                    .ToList(),
+                    CarService = c.CarService
+                    .Where(s => !s.ServiceDone == true)
+                    .ToList(),
+                    CarRetire = c.CarRetire
+                    .ToList()
+                });
         }
         public Cars Update(Cars carChanges)
         {
@@ -172,38 +163,36 @@ namespace Biluthyrning_AB.Models
                 .Where(c => c.Id == id)
                 .SingleOrDefault();
         }
-        public CarCleaningVM[] GetFullCleaningList()
+        public IEnumerable<CarCleaning> GetFullCleaningList()
         {
             return context.CarCleaning
-            .Select(s => new CarCleaningVM
-            {
-                CarId = s.CarId,
-                CleaningDone = s.CleaningDone,
-                CleaningDoneDate = s.CleaningDoneDate,
-                CleaningId = s.Id,
-                FlaggedForCleaningDate = s.FlaggedForCleaningDate
-            }).ToArray();
+                .Select(s => new CarCleaning
+                {
+                    CarId = s.CarId,
+                    CleaningDone = s.CleaningDone,
+                    CleaningDoneDate = s.CleaningDoneDate,
+                    FlaggedForCleaningDate = s.FlaggedForCleaningDate,
+                    Id = s.Id
+                });
         }
-        public CarServiceVM[] GetFullServiceList()
+        public IEnumerable<CarService> GetFullServiceList()
         {
             return context.CarService
-                .Select(s => new CarServiceVM
+                .Select(s => new CarService
                 {
                     CarId = s.CarId,
                     FlaggedForServiceDate = s.FlaggedForServiceDate,
                     Id = s.Id,
                     ServiceDone = s.ServiceDone,
                     ServiceDoneDate = s.ServiceDoneDate,
-                    CarType = s.Car.CarType,
-                    Kilometer = s.Car.Kilometer,
-                    Registrationnumber = s.Car.Registrationnumber
-                }).ToArray();
+                    Car = s.Car
+                });
         }
         public CarService GetCarServiceById(int serviceId)
         {
-           return context.CarService
-            .Where(s => s.Id == serviceId)
-            .SingleOrDefault();
+            return context.CarService
+             .Where(s => s.Id == serviceId)
+             .SingleOrDefault();
         }
         public void UpdateCarService(CarService cs)
         {

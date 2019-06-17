@@ -9,8 +9,8 @@ namespace Biluthyrning_AB.Models
 {
     public interface ICustomersRepository
     {
-        CustomersDetailsVM GetCustomerDetails(int id);
-        IEnumerable<CustomersListOfAllVM> GetAllCustomers();
+        Customers GetCustomerDetails(int id);
+        IEnumerable<Customers> GetAllCustomers();
         Customers Add(Customers customer);
         Customers Update(Customers customerChanges);
         Customers Delete(int id);

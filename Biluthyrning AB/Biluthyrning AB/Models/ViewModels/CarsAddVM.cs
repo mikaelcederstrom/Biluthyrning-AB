@@ -20,9 +20,5 @@ namespace Biluthyrning_AB.Models.ViewModels
         [Required(ErrorMessage = "Skriv in en mätarställning i kilometer")]
         public int Kilometer { get; set; }
 
-        //[Display(Name = "Välj typ av bil")]
-        //public SelectListItem[] ListOfCarTypes { get; set; }
-
-        //public int SelectedCarTypeValue { get; set; }
     }
 }

@@ -25,23 +25,25 @@ namespace Biluthyrning_AB.Models
         {
             throw new NotImplementedException();
         }
-        public IEnumerable<CustomersListOfAllVM> GetAllCustomers()
+        public IEnumerable<Customers> GetAllCustomers()
         {
             return context.Customers
-                      .Select(c => new CustomersListOfAllVM
-                      {
-                          FirstName = c.FirstName,
-                          LastName = c.LastName,
-                          PersonNumber = c.PersonNumber,
-                          ID = c.Id,
-                          ActiveOrder = c.Orders.Where(o => o.CarReturned == false).Any()
-                      }).ToArray();
+                .Select(c => new Customers
+                {
+                    FirstName = c.FirstName,
+                    LastName = c.LastName,
+                    PersonNumber = c.PersonNumber,
+                    Id = c.Id,
+                    Orders = c.Orders
+                       .Where(o => o.CarReturned == false).ToList()
+                });
+
         }
-        public CustomersDetailsVM GetCustomerDetails(int id)
+        public Customers GetCustomerDetails(int id)
         {
             return context.Customers
                 .Where(c => c.Id == id)
-                .Select(c => new CustomersDetailsVM
+                .Select(c => new Customers
                 {
                     FirstName = c.FirstName,
                     LastName = c.LastName,
@@ -49,15 +51,6 @@ namespace Biluthyrning_AB.Models
                     PersonNumber = c.PersonNumber,
                     MembershipLevel = c.MembershipLevel,
                     Orders = c.Orders
-                       .Select(o => new CustomersDetailsOrders
-                       {
-                           CarReturned = o.CarReturned,
-                           Id = o.Id,
-                           KilometerAfterRental = o.KilometerAfterRental,
-                           KilometerBeforeRental = o.KilometerBeforeRental,
-                           RentalDate = o.RentalDate,
-                           ReturnDate = o.ReturnDate
-                       }).ToArray()
                 }).FirstOrDefault();
         }
         public int GetIdFromPersonNumber(string personNumber)

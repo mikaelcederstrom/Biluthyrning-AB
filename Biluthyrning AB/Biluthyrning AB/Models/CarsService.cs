@@ -61,16 +61,58 @@ namespace Biluthyrning_AB.Models
         }
         internal CarsRemoveVM[] ListOfAllCarsRemove()
         {
-            return carRepository.ListOfCarsForRemoval();
+            var cars = carRepository.ListOfCarsForRemoval().ToArray();
+
+            return cars
+                .Select(c => new CarsRemoveVM
+                {
+                    CarId = c.Id,
+                    CarType = c.CarType,
+                    Kilometer = c.Kilometer,
+                    Registrationnumber = c.Registrationnumber,
+                    Remove = false
+                }).ToArray(); ;
         }
+
+
+
         internal CarsDetailsVM GetCarById(int id)
         {
-            return carRepository.GetCarsDetails(id);
+            var car = carRepository.GetCarsDetails(id).FirstOrDefault();
+           
+            CarsDetailsVM cd = new CarsDetailsVM
+            {
+                AvailableForRent = car.AvailableForRent,
+                CarType = car.CarType,
+                Kilometer = car.Kilometer,
+                Registrationnumber = car.Registrationnumber,
+                Events = new CarsDetailsVMEvents[car.Events.Count]
+            };
+
+            int j = 0;
+            foreach (var item in car.Events)
+            {
+                cd.Events[j] = new CarsDetailsVMEvents
+                {
+                    BookingId = item.BookingId,
+                    CustomerId = item.CustomerId,
+                    Date = item.Date,
+                    EventType = eventsService.ConvertEventTypeToString(item.EventType)
+                };
+                if (item.Customer != null)
+                {
+                    cd.Events[j].CustomerFirstName = item.Customer.FirstName;
+                    cd.Events[j].CustomerLastName = item.Customer.LastName;
+                }
+                j++;
+            }
+
+            return cd;
 
         }
-        internal CarsListOfAllVM[] CheckCarsAvailabilityDuringPeriod(RentPeriodData dataModel)
+        internal Cars[] CheckCarsAvailabilityDuringPeriod(RentPeriodData dataModel)
         {
-            return carRepository.CheckCarsAvailabilityDuringPeriod(dataModel);
+            return carRepository.CheckCarsAvailabilityDuringPeriod(dataModel).ToArray();
         }
         internal string GetCarTypeByID(int id)
         {
@@ -132,15 +174,55 @@ namespace Biluthyrning_AB.Models
         }
         internal CarsListOfAllVM[] GetAllCarsFromDB()
         {
-            return carRepository.GetAllCars().ToArray();
+            var cars = carRepository.GetAllCars().ToArray();
+
+            CarsListOfAllVM[] cl = cars
+                .Select(c => new CarsListOfAllVM
+                {
+                    AvailableForRent = c.Orders.Select(o => o.CarReturned || c.Orders == null).Any(),
+                    CarType = c.CarType,
+                    CleaningId = c.CarCleaning.Select(s => s.Id).SingleOrDefault(),
+                    Kilometer = c.Kilometer,
+                    Registrationnumber = c.Registrationnumber,
+                    RetireId = c.CarRetire.Select(r => r.Id).SingleOrDefault(),
+                    ServiceId = c.CarService.Select(s => s.Id).SingleOrDefault(),
+                    Id = c.Id
+                })
+                .OrderBy(c => c.RetireId)
+                .ThenBy(c => c.CarType)
+            .ToArray();
+            return cl;
         }
         internal CarCleaningVM[] GetCleaningListFromDB()
         {
-            return carRepository.GetFullCleaningList();
+            CarCleaning[] cc = carRepository.GetFullCleaningList().ToArray();
+
+            return cc
+                .Select(c => new CarCleaningVM
+                {
+                    CarId = c.CarId,
+                    CleaningId = c.Id,
+                    CleaningDone = c.CleaningDone,
+                    CleaningDoneDate = c.CleaningDoneDate,
+                    FlaggedForCleaningDate = c.FlaggedForCleaningDate
+                }).ToArray();
         }
         internal CarServiceVM[] GetServiceListFromDB()
         {
-            return carRepository.GetFullServiceList();
+            CarService[] cs = carRepository.GetFullServiceList().ToArray();
+
+            return cs
+                .Select(s => new CarServiceVM
+                {
+                    CarId = s.CarId,
+                    FlaggedForServiceDate = s.FlaggedForServiceDate,
+                    Id = s.Id,
+                    ServiceDone = s.ServiceDone,
+                    ServiceDoneDate = s.ServiceDoneDate,
+                    CarType = s.Car.CarType,
+                    Kilometer = s.Car.Kilometer,
+                    Registrationnumber = s.Car.Registrationnumber
+                }).ToArray();
         }
         internal void UpdateCarKMByID(int id, int kilometreAfterRental)
         {
@@ -149,13 +231,14 @@ namespace Biluthyrning_AB.Models
             carRepository.Update(car);
 
             if (car.Kilometer >= 2000)
-                RetireCarByID(car.Id);
-            else
             {
-                ListCarForCleaningByID(car.Id);
-                if (car.Orders.Count() % 3 == 0)
-                    ListCarForServiceByID(car.Id);
+                RetireCarByID(car.Id);
+                return;
             }
+            ListCarForCleaningByID(car.Id);
+            if (car.Orders.Count() % 3 == 0)
+                ListCarForServiceByID(car.Id);
+
         }
 
     }
